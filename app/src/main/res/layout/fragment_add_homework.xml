@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/FragmentAddHomework"
+    android:layout_width="350dp"
+    android:layout_height="wrap_content"
+    android:background="@color/grey"
+    tools:context=".AddHomeworkFragment">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Homework"
+            android:textSize="25sp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="90dp"
+            android:paddingBottom="90dp"
+            tools:layout_editor_absoluteX="1dp">
+
+            <TextView
+                android:id="@+id/FRTVAddHomeworkSubject"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Subject"
+                android:textSize="20sp"/>
+
+            <EditText
+                android:id="@+id/FRETHomeworkDescription"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:inputType="textMultiLine"
+                android:gravity="top|start"
+                android:hint="Homework description" />
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/FRIVCalendar"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/calender_iv" />
+
+                <TextView
+                    android:id="@+id/FRTVDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="25sp"
+                    android:layout_marginLeft="3dp"
+                    android:text="XX/XX/XXXX" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/FRBTNAddHomework"
+            android:layout_gravity="right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add"
+            android:textAllCaps="false"/>
+
+    </LinearLayout>
+</FrameLayout>

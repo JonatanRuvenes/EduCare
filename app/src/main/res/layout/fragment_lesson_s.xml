@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/grey"
+    tools:context=".LessonSFragment">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/TVFragmentSubject"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="30sp"
+            android:text="Subject"
+            android:paddingBottom="3dp"/>
+
+        <Button
+            android:id="@+id/BTNFragmentHomework"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:text="Homeworks"
+            android:textAllCaps="false"
+            android:paddingBottom="3dp"/>
+
+        <Button
+            android:id="@+id/BTNFragmentTests"
+            android:layout_gravity="left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="My Tests"
+            android:textAllCaps="false"
+            android:paddingBottom="3dp"/>
+
+        <Button
+            android:id="@+id/BTNFragmentDisturbance"
+            android:layout_gravity="left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="disturbance"
+            android:textAllCaps="false"
+            android:paddingBottom="3dp"/>
+
+    </LinearLayout>
+
+</FrameLayout>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/MIHome"
+        android:title="Home" />
+    <item
+        android:id="@+id/MIClasses"
+        android:title="My Classes" />
+    <item
+        android:id="@+id/MILogOut"
+        android:title="Log out" />
+</menu>

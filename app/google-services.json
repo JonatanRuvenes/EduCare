@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "8591603551",
+    "firebase_url": "https://educarebase-default-rtdb.firebaseio.com",
+    "project_id": "educarebase",
+    "storage_bucket": "educarebase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:8591603551:android:70d60497beb132d755e8ea",
+        "android_client_info": {
+          "package_name": "com.example.educare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "8591603551-toreu68v96iis61lv7pj8m1kjgt9jgc0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1chBFPTQVIGwnJd8gzCL6E96MTpSam90"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "8591603551-toreu68v96iis61lv7pj8m1kjgt9jgc0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
