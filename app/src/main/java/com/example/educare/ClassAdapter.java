@@ -94,7 +94,8 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHol
 
                 Intent intent = new Intent(context, AddTestActivity.class);
                 intent.putExtra("ClassroomId", currentClass);
-                context.startActivity(intent);            }
+                context.startActivity(intent);
+            }
         });
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

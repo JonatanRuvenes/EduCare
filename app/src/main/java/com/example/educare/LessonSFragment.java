@@ -55,6 +55,7 @@ public class LessonSFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent i =new Intent(getActivity().getApplicationContext(), StudentTestsActivity.class);
+                i.putExtra("ClassId",ClassID);
                 startActivity(i);
             }
         });

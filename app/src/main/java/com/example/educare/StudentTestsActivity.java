@@ -1,5 +1,7 @@
 package com.example.educare;
 
+import static java.lang.Thread.sleep;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,8 +11,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -50,8 +54,6 @@ public class StudentTestsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         ClassID = intent.getStringExtra("ClassId");
 
-        ClassID = "none";
-
         Name = findViewById(R.id.TVStudentName);
         Name.setText(UserName);
 
@@ -62,12 +64,33 @@ public class StudentTestsActivity extends AppCompatActivity {
 
     private void updateTestsList() {
         ArrayList<TestOutput> tests = new ArrayList<>();
-        //ToDo: get data from firebase
+        db.collection("organizations").document(org).collection("Student")
+                .document(UserName).collection("Tests").get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            if (documentSnapshot.get("classID").toString().equals(ClassID)){
+                                Timestamp timestamp = documentSnapshot.getTimestamp("date");
+                                Date date = timestamp.toDate();
 
-        RecyclerView.LayoutManager testsListLayout = new LinearLayoutManager(StudentTestsActivity.this);
-        TestAdapter testsListAdapter = new TestAdapter(tests);
+                                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                                String formattedDate = sdf.format(date);
 
-        testsList.setLayoutManager(testsListLayout);
-        testsList.setAdapter(testsListAdapter);
+                                String TestName = documentSnapshot.getString("testName");
+                                int grade = documentSnapshot.getLong("grade").intValue();
+                                String subject = documentSnapshot.getString("subject");
+                                String teachersName = documentSnapshot.getString("teachers_name");
+
+                                tests.add(new TestOutput(TestName, grade, subject, teachersName, formattedDate));
+                            }
+                        }
+                        RecyclerView.LayoutManager testsListLayout = new LinearLayoutManager(StudentTestsActivity.this);
+                        TestAdapter testsListAdapter = new TestAdapter(tests);
+
+                        testsList.setLayoutManager(testsListLayout);
+                        testsList.setAdapter(testsListAdapter);
+                    }
+                });
     }
 }
