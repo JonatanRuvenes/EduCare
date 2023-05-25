@@ -62,6 +62,7 @@ public class StudentTestsActivity extends AppCompatActivity {
 
     private void updateTestsList() {
         ArrayList<TestOutput> tests = new ArrayList<>();
+        //ToDo: get data from firebase
 
         RecyclerView.LayoutManager testsListLayout = new LinearLayoutManager(StudentTestsActivity.this);
         TestAdapter testsListAdapter = new TestAdapter(tests);

@@ -1,5 +1,7 @@
 package com.example.educare;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +23,14 @@ public class StudentTestListAdapter extends RecyclerView.Adapter<StudentTestList
     ArrayList<String> students;
     String org;
 
+    public static int[] grades;
+
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public StudentTestListAdapter(ArrayList<String> students, String org){
         this.students = students;
         this.org = org;
+        this.grades = new int[students.size()];
     }
 
     @NonNull
@@ -40,6 +45,7 @@ public class StudentTestListAdapter extends RecyclerView.Adapter<StudentTestList
     public void onBindViewHolder(@androidx.annotation.NonNull StudentTestListViewHolder holder, int position) {
         String currentStudent = students.get(position);
 
+        int index = position;
         db.collection("organizations").document(org).collection("Student")
                 .document(currentStudent).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -47,6 +53,17 @@ public class StudentTestListAdapter extends RecyclerView.Adapter<StudentTestList
                         holder.name.setText(documentSnapshot.get("Name").toString());
                     }
                 });
+
+        holder.grade.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void afterTextChanged(Editable s) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                grades[index] = Integer.parseInt(s.toString());
+            }
+        });
     }
 
     @Override

@@ -62,7 +62,6 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.LessonView
                     i.putExtra("EndMinutes", lessons.get(holder.getAdapterPosition()).getEnd().Minutes);
                     view.getContext().startActivity(i);
                 }
-                //Open Student Fragment for multiple actions
                 else {
                     Bundle bundle = new Bundle();
                     bundle.putString("ClassroomId", lessons.get(holder.getAdapterPosition()).getClassroomID());

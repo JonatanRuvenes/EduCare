@@ -31,6 +31,8 @@ public class AddTestActivity extends AddMenuActivity {
 
     SharedPreferences UserData;
 
+    StudentTestListAdapter studentsTestListAdapter;
+
 
     ArrayList<String> students = new ArrayList<>();
     String ClassroomID;
@@ -80,15 +82,16 @@ public class AddTestActivity extends AddMenuActivity {
                 for (int i = 0; i < students.size();i++){
                     DocumentReference docRef = colRef.document(students.get(i)).collection("Tests").document(testName.getText().toString());
 
-//                    String Name = testName.getText().toString();
-//                    String subject = Subject.getText().toString();
-//                    int grade;
-//                    long currentTimeMillis = System.currentTimeMillis();
-//                    long currentTimeWithoutTime = (currentTimeMillis / (24 * 60 * 60 * 1000)) * (24 * 60 * 60 * 1000);
-//                    Timestamp timestamp = new Timestamp(currentTimeWithoutTime / 1000, 0);
-//                    Toast.makeText(AddTestActivity.this, timestamp.toDate().toString(), Toast.LENGTH_SHORT).show();
-//                    TestInput test = new TestInput(name, grade, subject, teachers_name, ClassroomID, date);
+                    String Name = testName.getText().toString();
+                    String subject = Subject.getText().toString();
+                    int grade = studentsTestListAdapter.grades[i];
+                    long currentTimeMillis = System.currentTimeMillis();
+                    long currentTimeWithoutTime = (currentTimeMillis / (24 * 60 * 60 * 1000)) * (24 * 60 * 60 * 1000);
+                    Timestamp date = new Timestamp(currentTimeWithoutTime / 1000, 0);
+                    TestInput test = new TestInput(Name, grade, subject, teachers_name, ClassroomID, date);
+                    docRef.set(test);
                 }
+                finish();
             }
         });
     }
@@ -103,10 +106,10 @@ public class AddTestActivity extends AddMenuActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 students = (ArrayList<String>) documentSnapshot.get("Students");
 
-                RecyclerView.LayoutManager studentsListLayout = new LinearLayoutManager(AddTestActivity.this);
-                StudentTestListAdapter studentsListAdapter = new StudentTestListAdapter(students, org);
-                studentList.setLayoutManager(studentsListLayout);
-                studentList.setAdapter(studentsListAdapter);
+                RecyclerView.LayoutManager studentsTestListLayout = new LinearLayoutManager(AddTestActivity.this);
+                studentsTestListAdapter = new StudentTestListAdapter(students, org);
+                studentList.setLayoutManager(studentsTestListLayout);
+                studentList.setAdapter(studentsTestListAdapter);
             }
         });
     }

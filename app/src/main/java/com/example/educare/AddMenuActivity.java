@@ -23,35 +23,35 @@ public class AddMenuActivity extends AppCompatActivity {
         return true;
     }
 
-//    @Override
-//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//
-//        UserData = getSharedPreferences("UserData", MODE_PRIVATE);
-//
-//        switch (item.getItemId()){
-//            case R.id.MIHome:
-//                i =new Intent(getApplicationContext(), HomePageActivity.class);
-//                startActivity(i);
-//                return true;
-//            case R.id.MILogOut:
-//                SharedPreferences.Editor EUserData = UserData.edit();
-//                EUserData.remove("org");
-//                EUserData.remove("UserName");
-//                EUserData.remove("tORs");
-//                i =new Intent(getApplicationContext(), SignInActivity.class);
-//                startActivity(i);
-//                return true;
-//            case R.id.MIClasses:
-//                if(UserData.getString("tORs", "not found").equals("Teacher")){
-//                    i = new Intent(getApplicationContext(), ClassesTActivity.class);
-//                    startActivity(i);
-//                }
-//                else{
-//                    // TODO: add ClassesSActivity
-//                }
-//                return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        UserData = getSharedPreferences("UserData", MODE_PRIVATE);
+
+        if (item.getItemId() == R.id.MIHome) {
+            i = new Intent(getApplicationContext(), HomePageActivity.class);
+            startActivity(i);
+            return true;
+        } else if (item.getItemId() == R.id.MILogOut) {
+            SharedPreferences.Editor EUserData = UserData.edit();
+            EUserData.remove("org");
+            EUserData.remove("UserName");
+            EUserData.remove("tORs");
+            EUserData.apply();
+            i = new Intent(getApplicationContext(), SignInActivity.class);
+            startActivity(i);
+            finish(); // Optional: Finish the current activity
+            return true;
+        } else if (item.getItemId() == R.id.MIClasses) {
+            if (UserData.getString("tORs", "not found").equals("Teacher")) {
+                i = new Intent(getApplicationContext(), ClassesTActivity.class);
+                startActivity(i);
+            } else {
+                // TODO: Handle the case for student menu item selection
+            }
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
 }
