@@ -29,6 +29,7 @@ public class LessonSFragment extends Fragment {
 
     TextView TVSubject;
     Button tests;
+    Button Homeworks;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_lesson_s, container, false);
@@ -41,6 +42,7 @@ public class LessonSFragment extends Fragment {
 
         TVSubject = view.findViewById(R.id.TVFragmentSubject);
         tests = view.findViewById(R.id.BTNFragmentTests);
+        Homeworks = view.findViewById(R.id.BTNFragmentHomework);
 
 
         db.collection("organizations").document(org).collection("Classes")
@@ -55,6 +57,15 @@ public class LessonSFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent i =new Intent(getActivity().getApplicationContext(), StudentTestsActivity.class);
+                i.putExtra("ClassId",ClassID);
+                startActivity(i);
+            }
+        });
+
+        Homeworks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i =new Intent(getActivity().getApplicationContext(), StudentHomeworksActivity.class);
                 i.putExtra("ClassId",ClassID);
                 startActivity(i);
             }

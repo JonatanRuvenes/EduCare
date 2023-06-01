@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -116,8 +117,6 @@ public class AddHomeworkFragment extends Fragment {
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             DocumentSnapshot document = task.getResult();
                             //importing data from firebase
-                            ArrayList<Boolean> done = (ArrayList<Boolean>) document.get("done?");
-                            if (done == null) done = new ArrayList<>();
                             ArrayList<String> text = (ArrayList<String>) document.get("text");
                             if (text == null) text = new ArrayList<>();
                             ArrayList<Timestamp> date = (ArrayList<Timestamp>) document.get("date");
@@ -127,15 +126,15 @@ public class AddHomeworkFragment extends Fragment {
                             calendar.set(mYear, mMonth, mDate);
                             date.add(new Timestamp(calendar.getTime()));
                             text.add(description.getText().toString());
-                            done.add(false);
-
 
                             Map<String, Object> updates = new HashMap<>();
-                            updates.put("done?", done);
                             updates.put("text", text);
                             updates.put("date", date);
 
                             docRef.set(updates);
+
+                            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                            fragmentManager.beginTransaction().remove(AddHomeworkFragment.this).commit();
                         }
                     });
                 }

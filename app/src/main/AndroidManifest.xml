@@ -17,6 +17,9 @@
         android:theme="@style/Theme.EduCare"
         tools:targetApi="31">
         <activity
+            android:name=".StudentHomeworksActivity"
+            android:exported="false" />
+        <activity
             android:name=".AddTestActivity"
             android:exported="false" />
         <activity

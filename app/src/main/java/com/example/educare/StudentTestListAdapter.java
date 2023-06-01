@@ -81,6 +81,5 @@ public class StudentTestListAdapter extends RecyclerView.Adapter<StudentTestList
             name = itemView.findViewById(R.id.RITVStudentNameForTest);
             grade = itemView.findViewById(R.id.RIETGrade);
         }
-     }
-
+    }
 }

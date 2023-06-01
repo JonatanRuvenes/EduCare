@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".StudentTestsActivity">
+    tools:context=".StudentHomeworksActivity">
 
     <LinearLayout
         android:layout_width="409dp"
@@ -18,7 +18,7 @@
         app:layout_constraintVertical_bias="0.5">
 
         <TextView
-            android:id="@+id/TVStudentTestName"
+            android:id="@+id/TVStudentHomeworksName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Student Name"
@@ -28,7 +28,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tests"
+            android:text="Homeworks"
             android:textAllCaps="false"
             android:textSize="20dp"/>
 
@@ -38,7 +38,7 @@
             android:layout_height="match_parent">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/RVTestsList"
+                android:id="@+id/RVHomeworkList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </ScrollView>

@@ -26,7 +26,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-public class StudentTestsActivity extends AppCompatActivity {
+public class StudentTestsActivity extends AddMenuActivity
+{
 
     SharedPreferences UserData;
     String org;
@@ -54,7 +55,7 @@ public class StudentTestsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         ClassID = intent.getStringExtra("ClassId");
 
-        Name = findViewById(R.id.TVStudentName);
+        Name = findViewById(R.id.TVStudentTestName);
         Name.setText(UserName);
 
         testsList = findViewById(R.id.RVTestsList);

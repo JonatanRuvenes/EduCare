@@ -17,7 +17,6 @@ public class MainActivity extends AppCompatActivity {
 
         UserData = getSharedPreferences("UserData", MODE_PRIVATE).edit();
 
-
         UserData.putString("org", "kiryat noar");
         UserData.putString("UserName", "StudentsListTest0");
         UserData.putString("tORs" , "Student");
