@@ -27,8 +27,6 @@ import java.util.Map;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    //TODO: fix this activity (its not working)(i don't know why)
-
     SharedPreferences.Editor UserData;
 
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -92,13 +90,16 @@ public class SignUpActivity extends AppCompatActivity {
                     Toast.makeText(SignUpActivity.this, "the two passwords don't match", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                if(Password1.getText().toString().length() < 6){
+                    Toast.makeText(SignUpActivity.this, "the password must be ut least 6 characters long", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 //Create User
                 String Email = ETEmail.getText().toString();
                 String Password = Password1.getText().toString();
 
-
-                mAuth.createUserWithEmailAndPassword(Email, Password1.getText().toString())
+                mAuth.createUserWithEmailAndPassword(Email, Password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -118,10 +119,10 @@ public class SignUpActivity extends AppCompatActivity {
                                                 public void onComplete(@NonNull Task<Void> task) {
 
                                                     //Add User to Organization
-                                                    User userToOrganization = new User(ID.getText().toString(), Email, Name.getText().toString(), Teacher_Student.getText().toString());
+                                                    User userToOrganization = new User(ID.getText().toString(), ETEmail.getText().toString(), Name.getText().toString(), Teacher_Student.getText().toString());
                                                     db.collection("organizations").document(Organization.getText().toString())
                                                             .collection(Teacher_Student.getText().toString()).document(Name.getText().toString())
-                                                            .set(userToOrganization);
+                                                            .set(userToOrganization);//line 127
 
                                                     //adding data to SharedPreferences
                                                     UserData.putString("org", Organization.getText().toString());
@@ -133,17 +134,10 @@ public class SignUpActivity extends AppCompatActivity {
                                                     Intent i =new Intent(getApplicationContext(), HomePageActivity.class);
                                                     startActivity(i);
                                                 }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Log.w("check", "Error adding document", e);
-                                                }
                                             });
                                 } else {
                                     // If sign in fails, display a message to the user.
-                                    Toast.makeText(getApplicationContext(), "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), "Authentication failed.",Toast.LENGTH_SHORT).show();
                                     task.getException().printStackTrace();
                                 }
                             }

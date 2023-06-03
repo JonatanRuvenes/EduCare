@@ -34,8 +34,7 @@ public class Clssroom {
     }
 
     public int findMinStudent(int a, int b){
-        if (students.get(a).Name.toLowerCase().compareTo(
-                students.get(b).Name.toLowerCase()) > 0) return b;
+        if (students.get(a).getName().toLowerCase().compareTo(students.get(b).getName().toLowerCase()) > 0) return b;
         return a;
     }
 

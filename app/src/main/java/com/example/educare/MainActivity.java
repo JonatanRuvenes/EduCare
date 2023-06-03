@@ -17,17 +17,17 @@ public class MainActivity extends AppCompatActivity {
 
         UserData = getSharedPreferences("UserData", MODE_PRIVATE).edit();
 
-        UserData.putString("org", "kiryat noar");
-        UserData.putString("UserName", "StudentsListTest0");
-        UserData.putString("tORs" , "Student");
-        UserData.apply();
+//        UserData.putString("org", "kiryat noar");
+//        UserData.putString("UserName", "StudentsListTest0");
+//        UserData.putString("tORs" , "Student");
+//        UserData.apply();
 
 //        UserData.putString("org", "kiryat noar");
 //        UserData.putString("UserName", "hezi");
 //        UserData.putString("tORs" , "Teacher");
 //        UserData.apply();
 
-        Intent i =new Intent(getApplicationContext(), HomePageActivity.class);
+        Intent i =new Intent(getApplicationContext(), SignUpActivity.class);
         startActivity(i);
     }
 }

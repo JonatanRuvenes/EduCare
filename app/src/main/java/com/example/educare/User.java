@@ -1,44 +1,40 @@
 package com.example.educare;
 
 public class User {
-
-    public String ID;
-    public String Email;
-    public String Name;
+    public String id;
+    public String email;
+    public String name;
     public String stu_teach;
 
-    public String picture;
-
-    public User(String ID, String email, String name, String Stu_Teach) {
-        this.ID = ID;
-        Email = email;
-        Name = name;
-        stu_teach = Stu_Teach;
-        picture = null;
+    public User(String id, String email, String name, String stu_teach) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+        this.stu_teach = stu_teach;
     }
 
-    public String getID() {
-        return ID;
+    public String getId() {
+        return id;
     }
 
-    public void setID(String ID) {
-        this.ID = ID;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getEmail() {
-        return Email;
+        return email;
     }
 
     public void setEmail(String email) {
-        Email = email;
+        this.email = email;
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
     public String getStu_teach() {
@@ -48,13 +44,4 @@ public class User {
     public void setStu_teach(String stu_teach) {
         this.stu_teach = stu_teach;
     }
-
-    public String getPicture() {
-        return picture;
-    }
-
-    public void setPicture(String picture) {
-        this.picture = picture;
-    }
 }
-
