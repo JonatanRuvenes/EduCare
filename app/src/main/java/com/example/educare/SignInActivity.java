@@ -25,7 +25,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 public class SignInActivity extends AppCompatActivity {
 
-    //TODO: create auto sighIn
+    SharedPreferences savedUserData;
 
     SharedPreferences.Editor UserData;
 
@@ -47,7 +47,17 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        UserData = getSharedPreferences("UserData", MODE_PRIVATE).edit();
+        savedUserData = getSharedPreferences("UserData", MODE_PRIVATE);
+        UserData = savedUserData.edit();
+
+        if (
+                savedUserData.getString("org", "nope")  != "nope" ||
+                savedUserData.getString("tORs", "nope")  != "nope" ||
+                savedUserData.getString("UserName", "nope")  != "nope"
+        ){
+            Intent i =new Intent(getApplicationContext(), HomePageActivity.class);
+            startActivity(i);
+        }
 
         mAuth = FirebaseAuth.getInstance();
 

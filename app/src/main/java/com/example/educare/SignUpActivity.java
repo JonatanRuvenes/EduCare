@@ -27,11 +27,12 @@ import java.util.Map;
 
 public class SignUpActivity extends AppCompatActivity {
 
+    //TODO: add loading screen;
+
     SharedPreferences.Editor UserData;
 
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-
 
     String userUID;
 
@@ -113,6 +114,8 @@ public class SignUpActivity extends AppCompatActivity {
                                     Map<String, Object> userToLUsersList = new HashMap<>();
                                     userToLUsersList.put("org", Organization.getText().toString());
                                     userToLUsersList.put("tORs",Teacher_Student.getText());
+                                    userToLUsersList.put("Name",Name.getText().toString());
+
                                     db.collection("Users").document(userUID).set(userToLUsersList)
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
