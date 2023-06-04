@@ -81,7 +81,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHol
                                 fragment.setArguments(bundle);
 
                                 activity.getSupportFragmentManager().beginTransaction()
-                                        .replace(R.id.FContainerAddAssignment,fragment)
+                                        .replace(R.id.FContainerClassesT,fragment)
                                         .addToBackStack(null).commit();
                             }
                         });
