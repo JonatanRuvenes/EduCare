@@ -46,8 +46,6 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.Studen
 
         public StudentsViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            picture = itemView.findViewById(R.id.RIIVStudentProfile);
             Name = itemView.findViewById(R.id.RITVStudentName);
         }
     }

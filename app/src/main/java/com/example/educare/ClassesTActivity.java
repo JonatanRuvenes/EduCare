@@ -47,7 +47,11 @@ public class ClassesTActivity extends AddMenuActivity {
         addClass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString("org", org);
+                bundle.putString("user name", UserName);
                 AddClassFragment myFragment = new AddClassFragment();
+                myFragment.setArguments(bundle);
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.FContainerClassesT, myFragment);

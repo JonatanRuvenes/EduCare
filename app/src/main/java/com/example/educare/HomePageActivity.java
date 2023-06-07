@@ -85,13 +85,14 @@ public class HomePageActivity extends AddMenuActivity {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshotOrig) {
                         ArrayList<Boolean> lessonDays = (ArrayList<Boolean>) documentSnapshotOrig.get("Days");
-                        if (lessonDays == null){return;}
+                        if (lessonDays == null)return;
                         if (lessonDays.get(day-1)) {
                             docRef.collection("Lessons").document(day + "")
                                     .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                         @Override
                                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                                             ArrayList<String> lessonsID = (ArrayList<String>) documentSnapshot.get("lessonsID");
+                                            if (lessonsID == null) return;
                                             for (int j = 0; j < lessonsID.size(); j++) {
                                                 db.collection("organizations").document(org)
                                                         .collection("Lessons").document(lessonsID.get(j))

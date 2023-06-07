@@ -18,6 +18,10 @@ public class MainActivity extends AppCompatActivity {
             email: jonatan3705@gmail.com
             password: 123456
             //Student
+
+            email: hezi@gmail.com
+            password: 123456
+            //Teacher
         */
         Intent i =new Intent(getApplicationContext(), SignInActivity.class);
         startActivity(i);

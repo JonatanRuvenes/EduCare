@@ -96,7 +96,7 @@ public class StudentsListAdapter extends RecyclerView.Adapter<StudentsListAdapte
             super(itemView);
 
             Name = itemView.findViewById(R.id.RITVStudentName);
-            profilePic = itemView.findViewById(R.id.RIIVStudentProfile);
+
             Attendance = itemView.findViewById(R.id.BTNAttendance);
             HomeWork = itemView.findViewById(R.id.BTNHomeWork);
         }

@@ -38,8 +38,6 @@ import java.util.Map;
 
 public class AddHomeworkFragment extends Fragment {
 
-    SharedPreferences.Editor UserData;
-
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     TextView Subject;
