@@ -35,10 +35,7 @@ public class AddClassFragment extends Fragment {
     static String userName;
 
     //TODO: make it work
-
-    //TODO: add students
-    //TODO: make search for the teacher
-    ArrayList<String> Students = new ArrayList<>();
+    static ArrayList<String> Students = new ArrayList<>();
 
     static ArrayList<Boolean> days = new ArrayList<>(Collections.nCopies(7, false));
     static ArrayList<lesson> lessons = new ArrayList<>();
@@ -51,8 +48,6 @@ public class AddClassFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_class, container,false);
-
-        Students.add("StudentsListTest0");
 
         //getting data from bundle
         Bundle args = getArguments();
@@ -90,8 +85,11 @@ public class AddClassFragment extends Fragment {
         addStudents.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               //TODO: open a new fragment and update the Students accordingly
-            }
+                AppCompatActivity activity = (AppCompatActivity) view.getContext();
+                AddStudentToClassFragment fragment = new AddStudentToClassFragment();
+                activity.getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.FContainerClassesT,fragment)
+                        .addToBackStack(null).commit();            }
         });
 
         addLesson = view.findViewById(R.id.FRBTNLesson);
@@ -218,9 +216,10 @@ public class AddClassFragment extends Fragment {
 
                             }
                         });
+
+                closeFragment();
             }
         });
-
         return view;
     }
 
@@ -234,6 +233,10 @@ public class AddClassFragment extends Fragment {
 
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
         fragmentManager.beginTransaction().remove(AddClassFragment.this).commit();
+    }
+
+    public static void AddStudent(String student){
+        Students.add(student);
     }
 
     public static void AddLesson(int day,int startHour,int startMinute, int endHour, int endMinute){

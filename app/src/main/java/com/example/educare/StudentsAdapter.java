@@ -32,6 +32,7 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.Studen
 
         holder.Name.setText(currentStudent.getName());
 
+
     }
 
     @Override
@@ -41,7 +42,6 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.Studen
 
     public static class StudentsViewHolder extends RecyclerView.ViewHolder{
 
-        ImageView picture;
         TextView Name;
 
         public StudentsViewHolder(@NonNull View itemView) {

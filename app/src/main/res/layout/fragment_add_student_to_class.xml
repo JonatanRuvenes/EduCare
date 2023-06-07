@@ -4,37 +4,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/grey"
     tools:context=".AddStudentToClassFragment">
 
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/FRBTNEndAddingStudents"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
+        android:text="add"
+        android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="@+id/button"
+        android:text="serch"
+        app:layout_constraintBottom_toBottomOf="@+id/FRBTNEndAddingStudents"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/button" />
+        app:layout_constraintTop_toTopOf="@+id/FRBTNEndAddingStudents" />
 
     <ScrollView
-        android:id="@+id/scrollView3"
         android:layout_width="409dp"
         android:layout_height="629dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button">
+        app:layout_constraintTop_toBottomOf="@+id/FRBTNEndAddingStudents">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="137dp"
-            android:layout_height="199dp"
+            android:id="@+id/FRRVStudentsToClass"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             tools:layout_editor_absoluteX="116dp"
             tools:layout_editor_absoluteY="1dp" />
 
