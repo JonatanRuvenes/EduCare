@@ -29,8 +29,6 @@ public class HomePageActivity extends AddMenuActivity {
 
     // Importing data from Firestore
     Calendar calendar = Calendar.getInstance();
-    SharedPreferences lessonSP;
-    SharedPreferences.Editor lessonSPEditor;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     ArrayList<String> Classes = new ArrayList<>();
 

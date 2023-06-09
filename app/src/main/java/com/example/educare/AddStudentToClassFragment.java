@@ -72,9 +72,9 @@ public class AddStudentToClassFragment extends Fragment {
     }
 
     private void updateStudentsList() {
-        RecyclerView.LayoutManager timetableLayout = new LinearLayoutManager(getContext());
+        RecyclerView.LayoutManager studentsToClassLayout = new LinearLayoutManager(getContext());
         studentsToClassAdapter = new StudentsToClassAdapter();
-        students.setLayoutManager(timetableLayout);
+        students.setLayoutManager(studentsToClassLayout);
         students.setAdapter(studentsToClassAdapter);
     }
 
