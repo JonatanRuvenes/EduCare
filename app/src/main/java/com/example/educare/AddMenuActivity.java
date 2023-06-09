@@ -47,7 +47,8 @@ public class AddMenuActivity extends AppCompatActivity {
                 i = new Intent(getApplicationContext(), ClassesTActivity.class);
                 startActivity(i);
             } else {
-                // TODO: Handle the case for student menu item selection
+                i = new Intent(getApplicationContext(), StudentClassesActivity.class);
+                startActivity(i);
             }
             return true;
         } else {

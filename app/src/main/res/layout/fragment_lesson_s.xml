@@ -38,15 +38,6 @@
             android:textAllCaps="false"
             android:paddingBottom="3dp"/>
 
-        <Button
-            android:id="@+id/BTNFragmentDisturbance"
-            android:layout_gravity="left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="disturbance"
-            android:textAllCaps="false"
-            android:paddingBottom="3dp"/>
-
     </LinearLayout>
 
 </FrameLayout>

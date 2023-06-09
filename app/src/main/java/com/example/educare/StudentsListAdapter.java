@@ -88,7 +88,6 @@ public class StudentsListAdapter extends RecyclerView.Adapter<StudentsListAdapte
 
     public static class StudentsListViewHolder extends RecyclerView.ViewHolder{
         public TextView Name;
-        public ImageView profilePic;
         public Button HomeWork;
         public Button Attendance;
 
