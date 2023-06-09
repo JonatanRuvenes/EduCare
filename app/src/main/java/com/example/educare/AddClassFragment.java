@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import android.text.Editable;
@@ -11,6 +12,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -20,12 +22,13 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import android.content.Context;
 
 public class AddClassFragment extends Fragment {
 
@@ -33,8 +36,6 @@ public class AddClassFragment extends Fragment {
 
     static String org;
     static String userName;
-
-    //TODO: make it work
     static ArrayList<String> Students = new ArrayList<>();
 
     static ArrayList<Boolean> days = new ArrayList<>(Collections.nCopies(7, false));
@@ -45,9 +46,14 @@ public class AddClassFragment extends Fragment {
     Button add;
     Button addStudents;
     Button addLesson;
+
+    static FragmentActivity  activity;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_class, container,false);
+
+        activity = getActivity();
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
         //getting data from bundle
         Bundle args = getArguments();
@@ -67,13 +73,9 @@ public class AddClassFragment extends Fragment {
         if (subjectText != null) subject.setText(subjectText);
         subject.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
             @Override
             public void afterTextChanged(Editable s) {
                 subjectText = s.toString();
@@ -85,6 +87,9 @@ public class AddClassFragment extends Fragment {
         addStudents.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Close the keyboard
+                imm.hideSoftInputFromWindow(subject.getWindowToken(), 0);
+
                 AppCompatActivity activity = (AppCompatActivity) view.getContext();
                 AddStudentToClassFragment fragment = new AddStudentToClassFragment();
                 activity.getSupportFragmentManager().beginTransaction()
@@ -96,6 +101,9 @@ public class AddClassFragment extends Fragment {
         addLesson.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Close the keyboard
+                imm.hideSoftInputFromWindow(subject.getWindowToken(), 0);
+
                 AppCompatActivity activity = (AppCompatActivity) view.getContext();
                 AddLessonFragment fragment = new AddLessonFragment();
                 activity.getSupportFragmentManager().beginTransaction()
@@ -108,6 +116,8 @@ public class AddClassFragment extends Fragment {
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Close the keyboard
+                imm.hideSoftInputFromWindow(subject.getWindowToken(), 0);
                 //check for valid input
                 if(subject.getText().toString().equals("")){
                     Toast.makeText(getActivity(), "need to enter subject", Toast.LENGTH_SHORT).show();
@@ -143,6 +153,7 @@ public class AddClassFragment extends Fragment {
                                                 db.collection("organizations").document(org)
                                                         .collection("Teacher").document(userName)
                                                         .update("Classes", classes);
+                                                closeFragment(0);
                                             }
                                         });
 
@@ -158,8 +169,9 @@ public class AddClassFragment extends Fragment {
                                                     if (classes == null)
                                                         classes = new ArrayList<>();
                                                     classes.add(documentId);
-                                                    studentsColRef.document(Students.get(finalI))
+                                                    studentsColRef.document(Students.get(finalI)) //crash in the 'get' command
                                                             .update("Classes", classes);
+                                                    if (finalI == Students.size()-1) closeFragment(1);
                                                 }
                                             });
                                 }
@@ -205,6 +217,7 @@ public class AddClassFragment extends Fragment {
                                                                             lessonsID.add(documentId);
                                                                             LessonsColRef.document(lessons.get(finalI).day + "")
                                                                                     .update("lessonsID",lessonsID);
+                                                                            if (finalI == lessons.size()-1) closeFragment(2);
                                                                             j[0] = false;
                                                                         }
                                                                     });
@@ -217,13 +230,24 @@ public class AddClassFragment extends Fragment {
                             }
                         });
 
-                closeFragment();
             }
         });
         return view;
     }
 
-    public void closeFragment(){
+    boolean[] commands = new boolean[]{false,false,false};
+    /**
+     * 0 - add class to the teacher
+     * 1 - add class to the students
+     * 2 - add lesson to firebase
+     **/
+    public void closeFragment(int code){
+
+        commands[code] = true;
+        for (int i = 0; i<commands.length; i++){
+            if (!commands[i]) return;
+        }
+
         days = new ArrayList<>(Collections.nCopies(7, false));
         lessons = new ArrayList<>();
         Students = new ArrayList<>();
@@ -236,10 +260,14 @@ public class AddClassFragment extends Fragment {
     }
 
     public static void AddStudent(String student){
+        Toast.makeText(activity, AddClassFragment.org, Toast.LENGTH_SHORT).show();
+
         Students.add(student);
     }
 
     public static void AddLesson(int day,int startHour,int startMinute, int endHour, int endMinute){
+        Toast.makeText(activity, AddClassFragment.org, Toast.LENGTH_SHORT).show();
+
         lessons.add(new lesson(new Time(startHour,startMinute),new Time(endHour,endMinute),day));
     }
     private static class lesson{

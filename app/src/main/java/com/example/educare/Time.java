@@ -38,6 +38,12 @@ public class Time {
 
     @Override
     public String toString() {
-        return Hour+":"+Minutes;
+        String hour;
+        if (Hour < 10) hour = "0"+Hour;
+        else hour = ""+Hour;
+        String minute;
+        if (Minutes < 10) minute = "0"+Minutes;
+        else minute = ""+Minutes;
+        return hour+":"+minute;
     }
 }

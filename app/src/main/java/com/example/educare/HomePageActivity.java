@@ -49,9 +49,6 @@ public class HomePageActivity extends AddMenuActivity {
         UserName = UserData.getString("UserName", "not found");
         day = calendar.get(Calendar.DAY_OF_WEEK);
 
-        //ToDo: Delete This Line
-        day = 2;
-
         // General vars
         Name = findViewById(R.id.TVName);
         Name.setText(UserName);

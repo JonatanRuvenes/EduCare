@@ -71,6 +71,7 @@ public class LessonSFragment extends Fragment {
             }
         });
 
+        //TODO: add disturbance activity
 
         // Inflate the layout for this fragment
         return view;

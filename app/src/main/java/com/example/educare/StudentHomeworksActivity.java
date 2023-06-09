@@ -61,7 +61,9 @@ public class StudentHomeworksActivity extends AddMenuActivity {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         ArrayList<Timestamp> date = (ArrayList<Timestamp>) documentSnapshot.get("date");
+                        if (date == null) date = new ArrayList<>();
                         ArrayList<String> text = (ArrayList<String>) documentSnapshot.get("text");
+                        if (text == null) text = new ArrayList<>();
 
                         for(int i = 0; i<date.size(); i++){
                             homeworks.add(new Homework(date.get(i),text.get(i)));
