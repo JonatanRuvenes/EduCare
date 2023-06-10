@@ -5,7 +5,7 @@
     android:id="@+id/FragmentAddHomework"
     android:layout_width="350dp"
     android:layout_height="wrap_content"
-    android:background="@color/grey"
+    android:background="@drawable/fragment_background"
     tools:context=".AddHomeworkFragment">
 
 

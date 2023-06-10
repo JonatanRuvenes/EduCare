@@ -46,13 +46,7 @@ public class StudentTestListAdapter extends RecyclerView.Adapter<StudentTestList
         String currentStudent = students.get(position);
 
         int index = position;
-        db.collection("organizations").document(org).collection("Student")
-                .document(currentStudent).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        holder.name.setText(documentSnapshot.get("Name").toString());
-                    }
-                });
+        holder.name.setText(currentStudent);
 
         holder.grade.addTextChangedListener(new TextWatcher() {
             @Override
