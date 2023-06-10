@@ -11,16 +11,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Name"
+        android:textSize="40sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TVDisturbance" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/TVDisturbance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="disturbance"
+        android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/TVStudentDisturbanceName" />
 
     <ScrollView
         android:layout_width="409dp"
@@ -29,7 +31,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TVStudentDisturbanceName">
+        app:layout_constraintTop_toBottomOf="@+id/TVDisturbance">
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/RVDisturbanceList"
             android:layout_width="match_parent"

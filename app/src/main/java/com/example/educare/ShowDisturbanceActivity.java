@@ -13,7 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -83,19 +85,10 @@ public class ShowDisturbanceActivity extends AppCompatActivity {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             for (int i = 0; i < Dates.size(); i++) {
                 if((requiredClass == null) || (requiredClass.equals(subjectsIDs.get(i)))) {
-                    int finalI = i;
-                    db.collection("organizations").document(org).collection("Classes")
-                            .document(subjectsIDs.get(i)).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                @Override
-                                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                    subjects.add((String) documentSnapshot.get("Subject"));
-
-                                    Date date = Dates.get(finalI).toDate();
-                                    dates.add(sdf.format(date));
-                                }
-                            });
+                    subjects.add(subjectsIDs.get(i));
+                    Date date = Dates.get(i).toDate();
+                    dates.add(sdf.format(date));
                 }
-
             }
         }
 
@@ -109,12 +102,19 @@ public class ShowDisturbanceActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull DisturbanceListViewHolder holder, int position) {
-            holder.subject.setText(subjects.get(position));
+            db.collection("organizations").document(org).collection("Classes")
+                            .document(subjects.get(position)).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            holder.subject.setText((String) documentSnapshot.get("Subject"));
+                        }
+                    });
             holder.date.setText(dates.get(position));
         }
 
         @Override
         public int getItemCount() {
+            Toast.makeText(ShowDisturbanceActivity.this, subjects.size() +"", Toast.LENGTH_SHORT).show();
             return subjects.size();
         }
 
