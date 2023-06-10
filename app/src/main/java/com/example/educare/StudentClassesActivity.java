@@ -8,11 +8,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -21,7 +24,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
-public class StudentClassesActivity extends AppCompatActivity {
+public class StudentClassesActivity extends AddMenuActivity {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     SharedPreferences UserData;
@@ -30,6 +33,9 @@ public class StudentClassesActivity extends AppCompatActivity {
 
     ArrayList<String> classes;
     RecyclerView classesList;
+
+    Button unShow;
+    Button noHomework;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +58,27 @@ public class StudentClassesActivity extends AppCompatActivity {
                             updateClassesList();
                     }
                 });
+
+        unShow = findViewById(R.id.BtnDisturbanceUnShows);
+        unShow.setOnClickListener(disturbanceOnClick);
+        noHomework = findViewById(R.id.BtnDisturbanceNoHomeworks);
+        noHomework.setOnClickListener(disturbanceOnClick);
     }
+
+    View.OnClickListener disturbanceOnClick = new View.OnClickListener(){
+
+        @Override
+        public void onClick(View v) {
+            String disturbance;
+            if (v == unShow) disturbance = "unShow";
+            else disturbance = "noHomeWork";
+
+            Intent i =new Intent(getApplicationContext(), ShowDisturbanceActivity.class);
+            i.putExtra("name", UserName);
+            i.putExtra("disturbance",disturbance);
+            startActivity(i);
+        }
+    };
 
     private void updateClassesList() {
         RecyclerView.LayoutManager classesListLayout = new LinearLayoutManager(StudentClassesActivity.this);
