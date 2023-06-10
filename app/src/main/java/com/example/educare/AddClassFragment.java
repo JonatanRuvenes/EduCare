@@ -47,12 +47,10 @@ public class AddClassFragment extends Fragment {
     Button addStudents;
     Button addLesson;
 
-    static FragmentActivity  activity;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_class, container,false);
 
-        activity = getActivity();
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
         //getting data from bundle
@@ -260,13 +258,10 @@ public class AddClassFragment extends Fragment {
     }
 
     public static void AddStudent(String student){
-        Toast.makeText(activity, AddClassFragment.org, Toast.LENGTH_SHORT).show();
-
         Students.add(student);
     }
 
     public static void AddLesson(int day,int startHour,int startMinute, int endHour, int endMinute){
-        Toast.makeText(activity, AddClassFragment.org, Toast.LENGTH_SHORT).show();
 
         lessons.add(new lesson(new Time(startHour,startMinute),new Time(endHour,endMinute),day));
     }

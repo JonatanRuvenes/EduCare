@@ -101,7 +101,9 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHol
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: make this to send to another activity with all class details
+                Intent intent = new Intent(context, ClassDetailsActivity.class);
+                intent.putExtra("ClassroomId", currentClass);
+                context.startActivity(intent);
             }
         });
     }

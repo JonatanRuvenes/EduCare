@@ -6,7 +6,6 @@ public class Lesson {
     Time End;
     String ClassroomID;
 
-
     public Lesson(String className, Time start, Time end, String classroomID) {
         this.subject = className;
         Start = start;

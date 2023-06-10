@@ -25,7 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class ShowDisturbanceActivity extends AppCompatActivity {
+public class ShowDisturbanceActivity extends AddMenuActivity {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     SharedPreferences UserData;
@@ -33,6 +33,7 @@ public class ShowDisturbanceActivity extends AppCompatActivity {
 
     String disturbance;
     String name;
+    String classID;
 
     TextView TVName;
     TextView TVDisturbance;
@@ -47,6 +48,7 @@ public class ShowDisturbanceActivity extends AppCompatActivity {
         Intent intent = getIntent();
         name = intent.getStringExtra("name");
         disturbance = intent.getStringExtra("disturbance");
+        classID = intent.getStringExtra("ClassId");
 
         TVName = findViewById(R.id.TVStudentDisturbanceName);
         TVDisturbance = findViewById(R.id.TVDisturbance);
@@ -69,7 +71,7 @@ public class ShowDisturbanceActivity extends AppCompatActivity {
                         if (dates == null) dates = new ArrayList<>();
 
                         RecyclerView.LayoutManager disturbanceListLayout = new LinearLayoutManager(ShowDisturbanceActivity.this);
-                        DisturbanceListAdapter disturbanceListAdapter = new DisturbanceListAdapter(subjects,dates,null);
+                        DisturbanceListAdapter disturbanceListAdapter = new DisturbanceListAdapter(subjects,dates,classID);
                         disturbanceList.setLayoutManager(disturbanceListLayout);
                         disturbanceList.setAdapter(disturbanceListAdapter);
                     }
@@ -114,7 +116,6 @@ public class ShowDisturbanceActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            Toast.makeText(ShowDisturbanceActivity.this, subjects.size() +"", Toast.LENGTH_SHORT).show();
             return subjects.size();
         }
 
