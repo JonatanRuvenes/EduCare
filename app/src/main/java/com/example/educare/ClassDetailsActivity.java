@@ -14,10 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -33,6 +37,7 @@ public class ClassDetailsActivity extends AddMenuActivity {
     TextView listKind;
     TextView Subject;
     Button student;
+    Button lessons;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +80,46 @@ public class ClassDetailsActivity extends AddMenuActivity {
                                 lists.setAdapter(listAdapter);
                             }
                         });
+            }
+        });
+
+        lessons = findViewById(R.id.BTNLessonsList);
+        lessons.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listKind.setText("Lessons");
+
+                db.collection("organizations").document(org).collection("Classes")
+                        .document(classID).collection("Lessons").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                ArrayList<Lesson> Lessons= new ArrayList<>();
+                                if (task.isSuccessful()) {
+                                    for (DocumentSnapshot document : task.getResult()) {
+                                        int day = Integer.parseInt(document.getId());
+                                        ArrayList<String> lessons = (ArrayList<String>) document.get("lessonsID");
+                                        if (lessons == null) lessons = new ArrayList<>();
+                                        for (int i = 0; i < lessons.size(); i++) {
+                                            db.collection("organizations").document(org).collection("Lessons")
+                                                    .document(lessons.get(i)).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                        @Override
+                                                        public void onSuccess(DocumentSnapshot document) {
+                                                            Time start = new Time(Math.toIntExact((long) document.get("startHour")),Math.toIntExact((long) document.get("startMinute")));
+                                                            Time end = new Time(Math.toIntExact((long) document.get("endHour")),Math.toIntExact((long) document.get("endMinute")));
+
+                                                            String time = start.toString() +"-"+ end.toString();
+                                                            Lessons.add(new Lesson(day, time));
+                                                            LessonsListAdapter listAdapter = new LessonsListAdapter(Lessons);
+                                                            lists.setAdapter(listAdapter);
+                                                        }
+                                                    });
+                                        }
+                                    }
+
+                                }
+                            }
+                        });
+
             }
         });
     }
@@ -140,4 +185,78 @@ public class ClassDetailsActivity extends AddMenuActivity {
             }
         }
     }
+    private class Lesson{
+        static String[] daysOfWeek = {
+                "Sunday",
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday"
+        };
+        String day;
+        String time;
+
+        public Lesson(int  day, String time) {
+            this.day = daysOfWeek[day];
+            this.time = time;
+        }
+
+        public String getDay() {
+            return day;
+        }
+
+        public void setDay(String day) {
+            this.day = day;
+        }
+
+        public String getTime() {
+            return time;
+        }
+
+        public void setTime(String time) {
+            this.time = time;
+        }
+    }
+    private class LessonsListAdapter extends RecyclerView.Adapter<LessonsListAdapter.LessonsListViewHolder>{
+        ArrayList<Lesson> lessons;
+
+        public LessonsListAdapter(ArrayList<Lesson> lessons) {
+            this.lessons = lessons;
+        }
+
+        @NonNull
+        @Override
+        public LessonsListAdapter.LessonsListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View lessonView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.recycleritem_lessoninclass,parent,false);
+            return new LessonsListAdapter.LessonsListViewHolder(lessonView);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull LessonsListAdapter.LessonsListViewHolder holder, int position) {
+            Lesson currentLesson = lessons.get(position);
+
+            holder.time.setText(currentLesson.getTime());
+            holder.day.setText(currentLesson.getDay());
+        }
+
+        @Override
+        public int getItemCount() {
+            return lessons.size();
+        }
+
+        public static class LessonsListViewHolder extends RecyclerView.ViewHolder{
+            TextView day;
+            TextView time;
+            public LessonsListViewHolder(@NonNull View itemView) {
+                super(itemView);
+
+                day = itemView.findViewById(R.id.RITVDay);
+                time = itemView.findViewById(R.id.RITVLessonTime);
+            }
+        }
+    }
+
 }
