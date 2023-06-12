@@ -134,7 +134,7 @@ public class SignUpActivity extends AppCompatActivity {
                                                     UserData.apply();
 
                                                     //Move to HomePageActivity
-                                                    Intent i =new Intent(getApplicationContext(), HomePageActivity.class);
+                                                    Intent i =new Intent(getApplicationContext(), SignInActivity.class);
                                                     startActivity(i);
                                                 }
                                             });

@@ -1,38 +1,42 @@
 package com.example.educare;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
+import static java.lang.Thread.sleep;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.Manifest;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -42,10 +46,8 @@ import java.util.Map;
 
 public class LessonTActivity extends AddMenuActivity {
 
-    //private FusedLocationProviderClient fusedLocationProviderClient;
-    private DatabaseReference databaseRef;
-    private static final int LOCATION_PERMISSION_CODE = 231;
-
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef;
 
     SharedPreferences UserData;
     String org;
@@ -56,12 +58,13 @@ public class LessonTActivity extends AddMenuActivity {
     Map<String, Object> dateMap = new HashMap<>();
     Map<String, Object> classNameMap = new HashMap<>();
     ArrayList<Student> students = new ArrayList<>();
+    StudentsListAdapter studentsListAdapter;
     String ClassroomID;
 
     RecyclerView studentsList;
     TextView Subject;
     Button update;
-    Button findData;
+    Button findStudents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,10 +78,7 @@ public class LessonTActivity extends AddMenuActivity {
         ClassroomID = i.getStringExtra("ClassroomId");
         SubjectName = i.getStringExtra("Subject");
 
-        //fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        // Get a reference to the root node
-        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
-        databaseRef = rootRef.child(ClassroomID);
+        myRef = database.getReference(org).child(ClassroomID);
 
         Subject = findViewById(R.id.TVSubject);
         db.collection("organizations").document(org).collection("Classes")
@@ -175,22 +175,98 @@ public class LessonTActivity extends AddMenuActivity {
                         });
                     }
                 }
-            }});
+            }
+        });
 
-        findData = findViewById(R.id.BTNFindData);
-        findData.setOnClickListener(new View.OnClickListener() {
+        findStudents = findViewById(R.id.BTNFindData);
+        findStudents.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //TODO: check why its not working
-                /*need to make that the teacher will find where is the student */
-                //getLocation();
+                getLocation();
             }
         });
 
 
-
         studentsList = findViewById(R.id.RVStudentsList);
         updateStudents();
+    }
+
+    private FusedLocationProviderClient fusedLocationClient;
+
+    public void getLocation() {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION}, 111);
+            return;
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 112);
+            return;
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 113);
+            return;
+        }
+
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            Toast.makeText(LessonTActivity.this, "Latitude:" +location.getLatitude(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LessonTActivity.this, "Longitude: " +location.getLongitude(), Toast.LENGTH_SHORT).show();
+
+                            UserLocation userLocation = new UserLocation(location.getLatitude(),location.getLongitude());
+                            myRef.child("Teacher").setValue(userLocation);
+                            myRef.addChildEventListener(new ChildEventListener() {
+                                //TODO: data is added to realtime data base good need to know when data is changed
+                                @Override
+                                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {
+                                    if (dataSnapshot.getKey().equals("students")) {
+                                        Toast.makeText(LessonTActivity.this, "hi", Toast.LENGTH_SHORT).show();
+                                        Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+                                        for (DataSnapshot child : children) {
+                                            String student = child.getValue(String.class);
+                                            addAttendanceToStudent(student);
+                                        }
+                                    }
+                                }
+                                @Override
+                                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                    if (snapshot.getKey().equals("students")) {
+                                        Toast.makeText(LessonTActivity.this, "hi", Toast.LENGTH_SHORT).show();
+                                        Iterable<DataSnapshot> children = snapshot.getChildren();
+                                        for (DataSnapshot child : children) {
+                                            String student = child.getValue(String.class);
+                                            addAttendanceToStudent(student);
+                                        }
+                                    }
+                                }
+                                @Override
+                                public void onChildRemoved(@NonNull DataSnapshot snapshot) {}
+                                @Override
+                                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {}
+                            });
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        sleep(5000);
+                                        myRef.child("Teacher").setValue(new UserLocation(0,0));
+                                    } catch (InterruptedException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
+                            }).start();
+                        } else {
+                            Toast.makeText(LessonTActivity.this, "having problem find your location", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     public void updateStudents(){
@@ -205,71 +281,102 @@ public class LessonTActivity extends AddMenuActivity {
                     students.add(new Student(studentsNames.get(i)));
 
                 RecyclerView.LayoutManager studentsListLayout = new LinearLayoutManager(LessonTActivity.this);
-                StudentsListAdapter studentsListAdapter = new StudentsListAdapter(students , org);
+                studentsListAdapter = new StudentsListAdapter(students , org);
                 studentsList.setLayoutManager(studentsListLayout);
                 studentsList.setAdapter(studentsListAdapter);
             }
         });
     }
 
+    public void addAttendanceToStudent(String student){
+        for (int i = 0; i < students.size(); i++) {
+            if (students.get(i).Name.equals(student)){
+                students.get(i).Attendance = true;
+                RecyclerView.LayoutManager layoutManager = studentsList.getLayoutManager();
+                StudentsListAdapter.holders.get(i).Attendance.setText("UnShow");
+            }
+        }
+    }
 
-    /*private ActivityResultLauncher<String[]> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(),
-            new ActivityResultCallback<Map<String, Boolean>>() {
+    private class StudentsListAdapter extends RecyclerView.Adapter<com.example.educare.StudentsListAdapter.StudentsListViewHolder>{
+        ArrayList<Student> students;
+        String org;
+        static ArrayList<com.example.educare.StudentsListAdapter.StudentsListViewHolder> holders = new ArrayList<com.example.educare.StudentsListAdapter.StudentsListViewHolder>();
+
+        public StudentsListAdapter(ArrayList<Student> students, String org) {
+            holders = new ArrayList<com.example.educare.StudentsListAdapter.StudentsListViewHolder>();
+            this.students = students;
+            this.org = org;
+        }
+
+        @NonNull
+        @Override
+        public com.example.educare.StudentsListAdapter.StudentsListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+            View studentView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.recycleritem_student,parent,false);
+            return new com.example.educare.StudentsListAdapter.StudentsListViewHolder(studentView);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull com.example.educare.StudentsListAdapter.StudentsListViewHolder holder, int position) {
+            holders.add(holder);
+            Student currentStudent = students.get(position);
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            DocumentReference docRef = db.collection("organizations")
+                    .document(org).collection("Student")
+                    .document(currentStudent.getName());
+            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
-                public void onActivityResult(Map<String, Boolean> result) {
-                    if (result != null) {
-                        boolean fine = result.get(Manifest.permission.ACCESS_FINE_LOCATION);
-                        boolean coarse = result.get(Manifest.permission.ACCESS_COARSE_LOCATION);
-                        // this means permission has been approved
-                        if (fine && coarse) {
-                            // this method handles locations
-                            getLocation();
-
-
-                            Toast.makeText(LessonTActivity.this, "Location Permission approved", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(LessonTActivity.this, "App cannot work without location approval", Toast.LENGTH_SHORT).show();
-                            LessonTActivity.this.finish();
-                        }
-
-
-                    } else {
-                        Toast.makeText(LessonTActivity.this, "App cannot work without location approval", Toast.LENGTH_SHORT).show();
-                        LessonTActivity.this.finish();
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    if (documentSnapshot.exists()) {
+                        //Taking data from firestore
+                        holder.Name.setText(documentSnapshot.getString("Name"));;
                     }
-
-
                 }
-
             });
-    private void getLocation() {
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            holder.Attendance.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    students.get(holder.getAdapterPosition()).changeAttendance();
+                    if (holder.Attendance.getText().toString().equals("Attendance"))
+                        holder.Attendance.setText("UnShow");
+                    else holder.Attendance.setText("Attendance");
+                }
+            });
 
-            String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION};
-            requestPermissionLauncher.launch(permissions);
-
-        }
-        else{
-
-            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
-            fusedLocationProviderClient.getCurrentLocation(100,null)
-                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            if(location!=null)
-                            {
-                                double lat = location.getLatitude();
-                                double lon = location.getLongitude();
-
-                                Toast.makeText(LessonTActivity.this, "location = " + lat + "," + lon, Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-
+            holder.HomeWork.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    students.get(holder.getAdapterPosition()).changeHomeWork();
+                    if (holder.HomeWork.getText().toString().equals("HomeWork"))
+                        holder.HomeWork.setText("no HomeWork");
+                    else holder.HomeWork.setText("HomeWork");
+                }
+            });
 
         }
 
-    }*/
+        @Override
+        public int getItemCount() {
+            return students.size();
+        }
+
+        public static class StudentsListViewHolder extends RecyclerView.ViewHolder{
+            public TextView Name;
+            public Button HomeWork;
+            public Button Attendance;
+
+            public StudentsListViewHolder(@NonNull View itemView) {
+                super(itemView);
+
+                Name = itemView.findViewById(R.id.RITVStudentName);
+
+                Attendance = itemView.findViewById(R.id.BTNAttendance);
+                HomeWork = itemView.findViewById(R.id.BTNHomeWork);
+            }
+        }
+    }
 }
