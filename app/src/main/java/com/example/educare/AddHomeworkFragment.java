@@ -52,7 +52,6 @@ public class AddHomeworkFragment extends Fragment {
 
     //General data variables ***********************************************************************
 
-
     //Views
     TextView Subject;
     TextView dateTXT;

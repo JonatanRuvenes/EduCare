@@ -21,22 +21,27 @@ import java.sql.Timestamp;
 
 public class AddLessonFragment extends Fragment {
 
-    TextView Start;
-    TextView End;
+    //General data variables ***********************************************************************
+    //Activity variables
 
-    Button Add;
-    Button[] days = new Button[7];
     int day = 0;
     int startHour;
     int startMinute;
     int endHour;
     int endMinute;
+    //General data variables ***********************************************************************
+
+    //Views
+    TextView Start;
+    TextView End;
+    Button Add;
+    Button[] days = new Button[7];
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_lesson, container, false);
 
+        //Find views
         days[0] = view.findViewById(R.id.FRBTNDay1);
         days[1] = view.findViewById(R.id.FRBTNDay2);
         days[2] = view.findViewById(R.id.FRBTNDay3);
@@ -44,16 +49,16 @@ public class AddLessonFragment extends Fragment {
         days[4] = view.findViewById(R.id.FRBTNDay5);
         days[5] = view.findViewById(R.id.FRBTNDay6);
         days[6] = view.findViewById(R.id.FRBTNDay7);
-        for (int i = 0; i<7; i++)
-            days[i].setOnClickListener(dayOnClick);
-
         Start = view.findViewById(R.id.FRTVStart);
         End = view.findViewById(R.id.FRTVEnd);
+        Add = view.findViewById(R.id.FRBTNAddLesson);
+
+        //Sets views
+        for (int i = 0; i<7; i++) days[i].setOnClickListener(dayOnClick);
 
         Start.setOnClickListener(timeOnClick);
         End.setOnClickListener(timeOnClick);
 
-        Add = view.findViewById(R.id.FRBTNAddLesson);
         Add.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,6 +66,8 @@ public class AddLessonFragment extends Fragment {
                     Toast.makeText(getActivity(), "need to chose a day", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                //return to AddClassFragment
                 AddClassFragment.AddLesson(day,startHour,startMinute,endHour,endMinute);
                 AppCompatActivity activity = (AppCompatActivity) view.getContext();
                 AddClassFragment fragment = new AddClassFragment();
@@ -73,6 +80,7 @@ public class AddLessonFragment extends Fragment {
         return view;
     }
 
+    //Sets start and ent times
     OnClickListener timeOnClick = new OnClickListener() {
         int hour, minute;
         @Override
@@ -82,10 +90,11 @@ public class AddLessonFragment extends Fragment {
                 public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                     hour = selectedHour;
                     minute = selectedMinute;
+                    Time time = new Time(selectedHour,selectedMinute);
                     if (view == Start)
-                        Start.setText("Start:  "+hour+":"+minute);
+                        Start.setText("Start:  "+time.toString());
                     if (view == End)
-                        End.setText("End:    "+hour+":"+minute);
+                        End.setText("End:    "+time.toString());
                 }
             };
 
@@ -99,6 +108,7 @@ public class AddLessonFragment extends Fragment {
         }
     };
 
+    //change the lesson day to the day
     OnClickListener dayOnClick = new OnClickListener() {
         @Override
         public void onClick(View view) {
