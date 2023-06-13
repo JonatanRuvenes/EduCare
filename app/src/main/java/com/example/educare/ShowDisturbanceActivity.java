@@ -27,35 +27,53 @@ import java.util.Date;
 
 public class ShowDisturbanceActivity extends AddMenuActivity {
 
+    //General data variables ***********************************************************************
+    //Firestore variables
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    SharedPreferences UserData;
-    String org;
 
+    //SharedPreferences variables
+    SharedPreferences UserData;
+
+    //User variables
+    String org;
     String disturbance;
     String name;
     String classID;
 
+    //General data variables ***********************************************************************
+
+    //Views
     TextView TVName;
     TextView TVDisturbance;
     RecyclerView disturbanceList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_disturbance);
 
+        //getting general vars *********************************************************************
+        //getting data from SharedPreferences
         UserData = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         org = UserData.getString("org", "not found");
+
+        //getting data from Intent
         Intent intent = getIntent();
         name = intent.getStringExtra("name");
         disturbance = intent.getStringExtra("disturbance");
         classID = intent.getStringExtra("ClassId");
 
+        //getting general vars *********************************************************************
+
+        //Find views
         TVName = findViewById(R.id.TVStudentDisturbanceName);
         TVDisturbance = findViewById(R.id.TVDisturbance);
+        disturbanceList = findViewById(R.id.RVDisturbanceList);
+
+        //Sets views
         TVName.setText(name);
         TVDisturbance.setText(disturbance);
 
-        disturbanceList = findViewById(R.id.RVDisturbanceList);
         updateDisturbanceList();
     }
 
