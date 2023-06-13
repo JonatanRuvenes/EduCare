@@ -178,18 +178,17 @@ public class LessonTActivity extends AddMenuActivity {
             }
         });
 
+        studentsList = findViewById(R.id.RVStudentsList);
+        updateStudents();
+
         findStudents = findViewById(R.id.BTNFindData);
         findStudents.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: check why its not working
                 getLocation();
             }
         });
 
-
-        studentsList = findViewById(R.id.RVStudentsList);
-        updateStudents();
     }
 
     private FusedLocationProviderClient fusedLocationClient;
@@ -218,39 +217,25 @@ public class LessonTActivity extends AddMenuActivity {
                             Toast.makeText(LessonTActivity.this, "Latitude:" +location.getLatitude(), Toast.LENGTH_SHORT).show();
                             Toast.makeText(LessonTActivity.this, "Longitude: " +location.getLongitude(), Toast.LENGTH_SHORT).show();
 
-                            UserLocation userLocation = new UserLocation(location.getLatitude(),location.getLongitude());
-                            myRef.child("Teacher").setValue(userLocation);
-                            myRef.addChildEventListener(new ChildEventListener() {
-                                //TODO: data is added to realtime data base good need to know when data is changed
+                            myRef.addValueEventListener(new ValueEventListener() {
                                 @Override
-                                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {
-                                    if (dataSnapshot.getKey().equals("students")) {
-                                        Toast.makeText(LessonTActivity.this, "hi", Toast.LENGTH_SHORT).show();
-                                        Iterable<DataSnapshot> children = dataSnapshot.getChildren();
-                                        for (DataSnapshot child : children) {
-                                            String student = child.getValue(String.class);
-                                            addAttendanceToStudent(student);
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                                        if (childSnapshot.getKey().equals("Students")) {
+                                            for (DataSnapshot studentSnapshot : childSnapshot.getChildren()) {
+                                                String student = studentSnapshot.getValue(String.class);
+                                                addAttendanceToStudent(student);
+                                            }
                                         }
                                     }
                                 }
-                                @Override
-                                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                                    if (snapshot.getKey().equals("students")) {
-                                        Toast.makeText(LessonTActivity.this, "hi", Toast.LENGTH_SHORT).show();
-                                        Iterable<DataSnapshot> children = snapshot.getChildren();
-                                        for (DataSnapshot child : children) {
-                                            String student = child.getValue(String.class);
-                                            addAttendanceToStudent(student);
-                                        }
-                                    }
-                                }
-                                @Override
-                                public void onChildRemoved(@NonNull DataSnapshot snapshot) {}
-                                @Override
-                                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {}
                             });
+
+                            UserLocation userLocation = new UserLocation(location.getLatitude(),location.getLongitude());
+                            myRef.child("Teacher").setValue(userLocation);
+
                             new Thread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -289,37 +274,37 @@ public class LessonTActivity extends AddMenuActivity {
     }
 
     public void addAttendanceToStudent(String student){
-        for (int i = 0; i < students.size(); i++) {
-            if (students.get(i).Name.equals(student)){
-                students.get(i).Attendance = true;
+        for (int i = 0; i < StudentsListAdapter.students.size(); i++) {
+            if (StudentsListAdapter.students.get(i).Name.equals(student)){
+                StudentsListAdapter.students.get(i).Attendance = true;
                 RecyclerView.LayoutManager layoutManager = studentsList.getLayoutManager();
                 StudentsListAdapter.holders.get(i).Attendance.setText("UnShow");
             }
         }
     }
 
-    private class StudentsListAdapter extends RecyclerView.Adapter<com.example.educare.StudentsListAdapter.StudentsListViewHolder>{
-        ArrayList<Student> students;
+    private class StudentsListAdapter extends RecyclerView.Adapter<StudentsListAdapter.StudentsListViewHolder>{
+        static ArrayList<Student> students;
         String org;
-        static ArrayList<com.example.educare.StudentsListAdapter.StudentsListViewHolder> holders = new ArrayList<com.example.educare.StudentsListAdapter.StudentsListViewHolder>();
+        static ArrayList<StudentsListAdapter.StudentsListViewHolder> holders = new ArrayList<  StudentsListAdapter.StudentsListViewHolder>();
 
         public StudentsListAdapter(ArrayList<Student> students, String org) {
-            holders = new ArrayList<com.example.educare.StudentsListAdapter.StudentsListViewHolder>();
+            holders = new ArrayList<>();
             this.students = students;
             this.org = org;
         }
 
         @NonNull
         @Override
-        public com.example.educare.StudentsListAdapter.StudentsListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public StudentsListAdapter.StudentsListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
             View studentView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.recycleritem_student,parent,false);
-            return new com.example.educare.StudentsListAdapter.StudentsListViewHolder(studentView);
+            return new StudentsListAdapter.StudentsListViewHolder(studentView);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull com.example.educare.StudentsListAdapter.StudentsListViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull StudentsListAdapter.StudentsListViewHolder holder, int position) {
             holders.add(holder);
             Student currentStudent = students.get(position);
             FirebaseFirestore db = FirebaseFirestore.getInstance();

@@ -27,8 +27,6 @@ import java.util.Map;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    //TODO: add loading screen;
-
     SharedPreferences.Editor UserData;
 
     FirebaseAuth mAuth = FirebaseAuth.getInstance();

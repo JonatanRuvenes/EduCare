@@ -124,7 +124,6 @@ public class SignInActivity extends AppCompatActivity {
                                                                                     Log.d("getLongitude", studentLocation[0].getLongitude()+"");
 
                                                                                     if (TeacherLocation.isWithinRange(studentLocation[0])|| true){
-                                                                                        //TODO: delete the true statement
                                                                                         database.getReference(org).child(id).child("Students").child(Name).setValue(Name);
                                                                                     }
                                                                                 }
