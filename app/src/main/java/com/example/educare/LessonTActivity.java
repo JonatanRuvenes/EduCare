@@ -46,21 +46,30 @@ import java.util.Map;
 
 public class LessonTActivity extends AddMenuActivity {
 
+    //General data variables ***********************************************************************
+    //Firestore variables
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    //RealtimeDatabase variables
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef;
 
+    //RealtimeDatabase variables
     SharedPreferences UserData;
-    String org;
-    String SubjectName;
 
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    //Activity variables
     Timestamp lessonTime;
-    Map<String, Object> dateMap = new HashMap<>();
-    Map<String, Object> classNameMap = new HashMap<>();
     ArrayList<Student> students = new ArrayList<>();
     StudentsListAdapter studentsListAdapter;
+
+    //User variables
+    String org;
+    String SubjectName;
     String ClassroomID;
 
+    //General data variables ***********************************************************************
+
+    //Views
     RecyclerView studentsList;
     TextView Subject;
     Button update;
@@ -70,17 +79,25 @@ public class LessonTActivity extends AddMenuActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lesson_tactivity);
-
+        //getting general vars *********************************************************************
+        //getting data from SharedPreferences
         UserData = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         org = UserData.getString("org", "not found");
-
+        //getting data from Intent
         Intent i = getIntent();
         ClassroomID = i.getStringExtra("ClassroomId");
         SubjectName = i.getStringExtra("Subject");
 
         myRef = database.getReference(org).child(ClassroomID);
+        //getting general vars *********************************************************************
 
+        //Find views
         Subject = findViewById(R.id.TVSubject);
+        update = findViewById(R.id.BTNUpdateStudentsData);
+        studentsList = findViewById(R.id.RVStudentsList);
+        findStudents = findViewById(R.id.BTNFindData);
+
+        //Sets views
         db.collection("organizations").document(org).collection("Classes")
                 .document(ClassroomID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -89,7 +106,7 @@ public class LessonTActivity extends AddMenuActivity {
                     }
                 });
 
-        update = findViewById(R.id.BTNUpdateStudentsData);
+
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,6 +117,7 @@ public class LessonTActivity extends AddMenuActivity {
                 calendar.set(Calendar.MILLISECOND, 0);
                 lessonTime = new Timestamp(calendar.getTime());
                 for (int i = 0; i < students.size(); i++) {
+                    //Adding Attendance to Student
                     if (!students.get(i).Attendance) {
                         CollectionReference colRef = db.collection("organizations").document(org)
                                 .collection("Student").document(students.get(i).getName())
@@ -139,6 +157,13 @@ public class LessonTActivity extends AddMenuActivity {
                                 }
                             }
                         });
+                    }
+                    //Adding Homework to Student
+                    if (!students.get(i).DidHomeWork) {
+                        CollectionReference colRef = db.collection("organizations").document(org)
+                                .collection("Student").document(students.get(i).getName())
+                                .collection("disturbance");
+                        int finalI = i;
 
                         DocumentReference docRefNoHomeWork = colRef.document("noHomeWork");
                         docRefNoHomeWork.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -178,10 +203,8 @@ public class LessonTActivity extends AddMenuActivity {
             }
         });
 
-        studentsList = findViewById(R.id.RVStudentsList);
         updateStudents();
 
-        findStudents = findViewById(R.id.BTNFindData);
         findStudents.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -191,13 +214,16 @@ public class LessonTActivity extends AddMenuActivity {
 
     }
 
-    private FusedLocationProviderClient fusedLocationClient;
 
+    /* This method find the teachers location and send it to all of the students by
+    that the user find the distance between him and the teacher and returns if the
+    student is in reasonable distance from the teacher and if it is the teacher set
+    the student as Attendance in lesson */
     public void getLocation() {
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION}, 111);
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 111);
             return;
         }
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -214,8 +240,8 @@ public class LessonTActivity extends AddMenuActivity {
                     @Override
                     public void onSuccess(Location location) {
                         if (location != null) {
-                            Toast.makeText(LessonTActivity.this, "Latitude:" +location.getLatitude(), Toast.LENGTH_SHORT).show();
-                            Toast.makeText(LessonTActivity.this, "Longitude: " +location.getLongitude(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LessonTActivity.this, "Latitude:" + location.getLatitude(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LessonTActivity.this, "Longitude: " + location.getLongitude(), Toast.LENGTH_SHORT).show();
 
                             myRef.addValueEventListener(new ValueEventListener() {
                                 @Override
@@ -229,11 +255,13 @@ public class LessonTActivity extends AddMenuActivity {
                                         }
                                     }
                                 }
+
                                 @Override
-                                public void onCancelled(@NonNull DatabaseError error) {}
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                }
                             });
 
-                            UserLocation userLocation = new UserLocation(location.getLatitude(),location.getLongitude());
+                            UserLocation userLocation = new UserLocation(location.getLatitude(), location.getLongitude());
                             myRef.child("Teacher").setValue(userLocation);
 
                             new Thread(new Runnable() {
@@ -241,7 +269,7 @@ public class LessonTActivity extends AddMenuActivity {
                                 public void run() {
                                     try {
                                         sleep(5000);
-                                        myRef.child("Teacher").setValue(new UserLocation(0,0));
+                                        myRef.child("Teacher").setValue(new UserLocation(0, 0));
                                     } catch (InterruptedException e) {
                                         throw new RuntimeException(e);
                                     }
@@ -254,7 +282,7 @@ public class LessonTActivity extends AddMenuActivity {
                 });
     }
 
-    public void updateStudents(){
+    public void updateStudents() {
         //finding data from firebase
         DocumentReference docRef = db.collection("organizations").document(org)
                 .collection("Classes").document(ClassroomID);
@@ -262,20 +290,20 @@ public class LessonTActivity extends AddMenuActivity {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 ArrayList<String> studentsNames = (ArrayList<String>) documentSnapshot.get("Students");
-                for (int i=0; i<studentsNames.size();i++)
+                for (int i = 0; i < studentsNames.size(); i++)
                     students.add(new Student(studentsNames.get(i)));
 
                 RecyclerView.LayoutManager studentsListLayout = new LinearLayoutManager(LessonTActivity.this);
-                studentsListAdapter = new StudentsListAdapter(students , org);
+                studentsListAdapter = new StudentsListAdapter(students, org);
                 studentsList.setLayoutManager(studentsListLayout);
                 studentsList.setAdapter(studentsListAdapter);
             }
         });
     }
 
-    public void addAttendanceToStudent(String student){
+    public void addAttendanceToStudent(String student) {
         for (int i = 0; i < StudentsListAdapter.students.size(); i++) {
-            if (StudentsListAdapter.students.get(i).Name.equals(student)){
+            if (StudentsListAdapter.students.get(i).Name.equals(student)) {
                 StudentsListAdapter.students.get(i).Attendance = true;
                 RecyclerView.LayoutManager layoutManager = studentsList.getLayoutManager();
                 StudentsListAdapter.holders.get(i).Attendance.setText("UnShow");
@@ -283,10 +311,10 @@ public class LessonTActivity extends AddMenuActivity {
         }
     }
 
-    private class StudentsListAdapter extends RecyclerView.Adapter<StudentsListAdapter.StudentsListViewHolder>{
+    private class StudentsListAdapter extends RecyclerView.Adapter<StudentsListAdapter.StudentsListViewHolder> {
         static ArrayList<Student> students;
         String org;
-        static ArrayList<StudentsListAdapter.StudentsListViewHolder> holders = new ArrayList<  StudentsListAdapter.StudentsListViewHolder>();
+        static ArrayList<StudentsListAdapter.StudentsListViewHolder> holders = new ArrayList<StudentsListAdapter.StudentsListViewHolder>();
 
         public StudentsListAdapter(ArrayList<Student> students, String org) {
             holders = new ArrayList<>();
@@ -299,7 +327,7 @@ public class LessonTActivity extends AddMenuActivity {
         public StudentsListAdapter.StudentsListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
             View studentView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.recycleritem_student,parent,false);
+                    .inflate(R.layout.recycleritem_student, parent, false);
             return new StudentsListAdapter.StudentsListViewHolder(studentView);
         }
 
@@ -317,7 +345,8 @@ public class LessonTActivity extends AddMenuActivity {
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     if (documentSnapshot.exists()) {
                         //Taking data from firestore
-                        holder.Name.setText(documentSnapshot.getString("Name"));;
+                        holder.Name.setText(documentSnapshot.getString("Name"));
+                        ;
                     }
                 }
             });
@@ -349,7 +378,7 @@ public class LessonTActivity extends AddMenuActivity {
             return students.size();
         }
 
-        public static class StudentsListViewHolder extends RecyclerView.ViewHolder{
+        public static class StudentsListViewHolder extends RecyclerView.ViewHolder {
             public TextView Name;
             public Button HomeWork;
             public Button Attendance;
