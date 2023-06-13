@@ -27,17 +27,24 @@ import java.util.Map;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    SharedPreferences.Editor UserData;
-
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    //General data variables ***********************************************************************
+    //Firestore variables
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    //Authentication variables
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+    //SharedPreferences variables
+    SharedPreferences.Editor UserData;
+
+    //User variables
     String userUID;
 
-    Button SignUp;
+    //General data variables ***********************************************************************
 
+    //Views
+    Button SignUp;
     Switch Teacher_Student;
-    EditText ID;
     EditText Name;
     EditText ETEmail;
     EditText Password1;
@@ -49,11 +56,21 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
+        //getting general vars *********************************************************************
         UserData = getSharedPreferences("UserData", MODE_PRIVATE).edit();
+        //getting general vars *********************************************************************
 
-        mAuth = FirebaseAuth.getInstance();
-
+        //Find views
+        Name = findViewById(R.id.ETSighInUserName);
+        ETEmail = findViewById(R.id.ETEmail);
+        Password1 = findViewById(R.id.ETSighInPassword1);
+        Password2 = findViewById(R.id.ETSighInPassword2);
+        Organization = findViewById(R.id.ETOrganizationName);
         Teacher_Student = findViewById(R.id.SWTeacher_Student);
+        SignUp = findViewById(R.id.BTNaddUser);
+
+        //Sets views
+
         Teacher_Student.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -67,21 +84,13 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
 
-        ID = findViewById(R.id.ETID);
-        Name = findViewById(R.id.ETSighInUserName);
-        ETEmail = findViewById(R.id.ETEmail);
-        Password1 = findViewById(R.id.ETSighInPassword1);
-        Password2 = findViewById(R.id.ETSighInPassword2);
-        Organization = findViewById(R.id.ETOrganizationName);
-
-        SignUp = findViewById(R.id.BTNaddUser);
         SignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)  {
 
                 //Check if input is correct
-                if (Name.getText().toString().equals("") || Password1.getText().toString().equals("") || ID.getText().toString().equals("") ||
-                        ETEmail.getText().toString().equals("") || Organization.getText().toString().equals("") || Password2.getText().toString().equals("")){
+                if (Name.getText().toString().equals("") || Password1.getText().toString().equals("")  || ETEmail.getText().toString().equals("") ||
+                        Organization.getText().toString().equals("") || Password2.getText().toString().equals("")){
                     Toast.makeText(SignUpActivity.this, "not all the fields are full", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -120,7 +129,7 @@ public class SignUpActivity extends AppCompatActivity {
                                                 public void onComplete(@NonNull Task<Void> task) {
 
                                                     //Add User to Organization
-                                                    User userToOrganization = new User(ID.getText().toString(), ETEmail.getText().toString(), Name.getText().toString(), Teacher_Student.getText().toString());
+                                                    User userToOrganization = new User(ETEmail.getText().toString(), Name.getText().toString(), Teacher_Student.getText().toString());
                                                     db.collection("organizations").document(Organization.getText().toString())
                                                             .collection(Teacher_Student.getText().toString()).document(Name.getText().toString())
                                                             .set(userToOrganization);//line 127
@@ -145,5 +154,41 @@ public class SignUpActivity extends AppCompatActivity {
                         });
             }
         });
+    }
+
+    private class User {
+        public String email;
+        public String name;
+        public String stu_teach;
+
+        public User(String email, String name, String stu_teach) {
+            this.email = email;
+            this.name = name;
+            this.stu_teach = stu_teach;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getStu_teach() {
+            return stu_teach;
+        }
+
+        public void setStu_teach(String stu_teach) {
+            this.stu_teach = stu_teach;
+        }
     }
 }
