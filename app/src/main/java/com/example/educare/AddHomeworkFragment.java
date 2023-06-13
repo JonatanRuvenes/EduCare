@@ -82,7 +82,7 @@ public class AddHomeworkFragment extends Fragment {
         description = view.findViewById(R.id.FRETHomeworkDescription);
         Add = view.findViewById(R.id.FRBTNAddHomework);
 
-
+        //Sets views
         Cal.setOnClickListener(new View.OnClickListener() {
             //change the date
             @Override
