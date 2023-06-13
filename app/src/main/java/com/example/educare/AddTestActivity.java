@@ -41,13 +41,14 @@ public class AddTestActivity extends AddMenuActivity {
     SharedPreferences UserData;
 
     //Activity variables
-    String ClassroomID;
-    String teachers_name;
+
     ArrayList<String> students = new ArrayList<>();
     StudentTestListAdapter studentsTestListAdapter;
 
     //User variables
     String org;
+    String ClassroomID;
+    String teachers_name;
 
     //General data variables ***********************************************************************
 

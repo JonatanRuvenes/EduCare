@@ -29,27 +29,51 @@ import java.util.ArrayList;
 import javax.security.auth.Subject;
 
 public class ClassDetailsActivity extends AddMenuActivity {
+
+    //General data variables ***********************************************************************
+    //Firestore variables
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    //SharedPreferences variables
     SharedPreferences UserData;
+
+    //User variables
     String org;
     String classID;
+
+    //General data variables ***********************************************************************
+
+    //Views
     RecyclerView lists;
     TextView listKind;
     TextView Subject;
     Button student;
     Button lessons;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_class_details);
 
+        //getting general vars *********************************************************************
+        //getting data from SharedPreferences
         UserData = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         org = UserData.getString("org", "not found");
+
+        //getting data from Intent
         Intent intent = getIntent();
         classID = intent.getStringExtra("ClassroomId");
 
+        //getting general vars *********************************************************************
+
+        //Find views
         listKind = findViewById(R.id.TVListKId);
         Subject = findViewById(R.id.TVClassSubject);
+        lists = findViewById(R.id.RVStudentsInClass);
+        student = findViewById(R.id.BTNStudentsList);
+        lessons = findViewById(R.id.BTNLessonsList);
+
+        //Sets views
         db.collection("organizations").document(org).collection("Classes")
                 .document(classID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -58,13 +82,11 @@ public class ClassDetailsActivity extends AddMenuActivity {
                     }
                 });
 
-        lists = findViewById(R.id.RVStudentsInClass);
         RecyclerView.LayoutManager listLayout = new LinearLayoutManager(ClassDetailsActivity.this);
         lists.setLayoutManager(listLayout);
 
-
-        student = findViewById(R.id.BTNStudentsList);
         student.setOnClickListener(new View.OnClickListener() {
+            //changing the lists RecyclerView to present StudentsList
             @Override
             public void onClick(View v) {
                 listKind.setText("Students");
@@ -83,8 +105,8 @@ public class ClassDetailsActivity extends AddMenuActivity {
             }
         });
 
-        lessons = findViewById(R.id.BTNLessonsList);
         lessons.setOnClickListener(new View.OnClickListener() {
+            //changing the lists RecyclerView to present LessonsList
             @Override
             public void onClick(View v) {
                 listKind.setText("Lessons");
