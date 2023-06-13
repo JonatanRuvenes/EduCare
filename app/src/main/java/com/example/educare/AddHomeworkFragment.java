@@ -38,30 +38,33 @@ import java.util.Map;
 
 public class AddHomeworkFragment extends Fragment {
 
+    //General data variables ***********************************************************************
+    //Firestore variables
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    //Activity variables
+    int mDate, mMonth, mYear;
+    ArrayList<String> Students;
+
+    //User variables
+    String org;
+    String ClassID;
+
+    //General data variables ***********************************************************************
+
+
+    //Views
     TextView Subject;
     TextView dateTXT;
     ImageView Cal;
-    int mDate, mMonth, mYear;
-
     EditText description;
-
-    String org;
-    String ClassID;
-    ArrayList<String> Students;
-
     Button Add;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_homework, container,false);
 
-        dateTXT = view.findViewById(R.id.FRTVDate);
-        Cal = view.findViewById(R.id.FRIVCalendar);
-        Subject = view.findViewById(R.id.FRTVAddHomeworkSubject);
-
+        //getting general vars *********************************************************************
         //getting data from bundle
         Bundle args = getArguments();
         if (args != null) {
@@ -71,10 +74,19 @@ public class AddHomeworkFragment extends Fragment {
         }
 
         ImportStudentsListFromFirestore();
+        //getting general vars *********************************************************************
 
+        //Find views
+        dateTXT = view.findViewById(R.id.FRTVDate);
+        Cal = view.findViewById(R.id.FRIVCalendar);
+        Subject = view.findViewById(R.id.FRTVAddHomeworkSubject);
         description = view.findViewById(R.id.FRETHomeworkDescription);
+        Add = view.findViewById(R.id.FRBTNAddHomework);
+
+        //Sets views
 
         Cal.setOnClickListener(new View.OnClickListener() {
+            //change the date
             @Override
             public void onClick(View view) {
                 final Calendar cal = Calendar.getInstance();
@@ -91,7 +103,6 @@ public class AddHomeworkFragment extends Fragment {
             }
         });
 
-        Add = view.findViewById(R.id.FRBTNAddHomework);
         Add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -105,42 +116,46 @@ public class AddHomeworkFragment extends Fragment {
                     return;
                 }
 
-                //adding data to firebase
-                CollectionReference colRef = db.collection("organizations").document(org)
-                        .collection("Student");
-                for (int i = 0; i< Students.size(); i++){
-                    DocumentReference docRef = colRef.document(Students.get(i)).collection("Homeworks").document(ClassID);
-                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            DocumentSnapshot document = task.getResult();
-                            //importing data from firebase
-                            ArrayList<String> text = (ArrayList<String>) document.get("text");
-                            if (text == null) text = new ArrayList<>();
-                            ArrayList<Timestamp> date = (ArrayList<Timestamp>) document.get("date");
-                            if (date == null) date = new ArrayList<>();
-
-                            Calendar calendar = Calendar.getInstance();
-                            calendar.set(mYear, mMonth, mDate);
-                            date.add(new Timestamp(calendar.getTime()));
-                            text.add(description.getText().toString());
-
-                            Map<String, Object> updates = new HashMap<>();
-                            updates.put("text", text);
-                            updates.put("date", date);
-
-                            docRef.set(updates);
-
-                            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                            fragmentManager.beginTransaction().remove(AddHomeworkFragment.this).commit();
-                        }
-                    });
-                }
+                addDataToFirestore();
             }
         });
 
 
         return view;
+    }
+
+    //Adding all the needed data to firestore
+    public void addDataToFirestore(){
+        CollectionReference colRef = db.collection("organizations").document(org)
+                .collection("Student");
+        for (int i = 0; i< Students.size(); i++){
+            DocumentReference docRef = colRef.document(Students.get(i)).collection("Homeworks").document(ClassID);
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    DocumentSnapshot document = task.getResult();
+                    //importing data from firebase
+                    ArrayList<String> text = (ArrayList<String>) document.get("text");
+                    if (text == null) text = new ArrayList<>();
+                    ArrayList<Timestamp> date = (ArrayList<Timestamp>) document.get("date");
+                    if (date == null) date = new ArrayList<>();
+
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.set(mYear, mMonth, mDate);
+                    date.add(new Timestamp(calendar.getTime()));
+                    text.add(description.getText().toString());
+
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("text", text);
+                    updates.put("date", date);
+
+                    docRef.set(updates);
+
+                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                    fragmentManager.beginTransaction().remove(AddHomeworkFragment.this).commit();
+                }
+            });
+        }
     }
 
     private void ImportStudentsListFromFirestore() {

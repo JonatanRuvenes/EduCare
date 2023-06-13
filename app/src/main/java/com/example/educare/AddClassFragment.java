@@ -138,7 +138,7 @@ public class AddClassFragment extends Fragment {
                     return;
                 }
 
-                addDataToFireStore();
+                addDataToFirestore();
             }
         });
 
@@ -147,7 +147,7 @@ public class AddClassFragment extends Fragment {
     }
 
     //Adding all the needed data to firestore
-    public void addDataToFireStore(){
+    public void addDataToFirestore(){
         Map<String, Object> classData = new HashMap<>();
         classData.put("teacher", userName);
         classData.put("Students", Students);
