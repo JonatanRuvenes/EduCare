@@ -311,6 +311,29 @@ public class LessonTActivity extends AddMenuActivity {
         }
     }
 
+    public class Student {
+        String Name;
+        Boolean Attendance;
+        Boolean DidHomeWork;
+
+        public Student(String name) {
+            Name = name;
+            Attendance = false;
+            DidHomeWork = false;
+        }
+
+        public void changeAttendance(){Attendance = !Attendance;}
+
+        public void changeHomeWork(){DidHomeWork = !DidHomeWork;}
+
+        public String getName() {
+            return Name;
+        }
+
+        public void setName(String name) {
+            Name = name;
+        }
+    }
     private class StudentsListAdapter extends RecyclerView.Adapter<StudentsListAdapter.StudentsListViewHolder> {
         static ArrayList<Student> students;
         String org;

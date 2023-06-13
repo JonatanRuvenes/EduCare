@@ -26,14 +26,24 @@ import java.util.ArrayList;
 
 public class StudentClassesActivity extends AddMenuActivity {
 
+    //General data variables ***********************************************************************
+    //Firestore variables
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    //SharedPreferences variables
     SharedPreferences UserData;
+
+    //Activity variables
+    ArrayList<String> classes;
+
+    //User variables
     String org;
     String UserName;
 
-    ArrayList<String> classes;
-    RecyclerView classesList;
+    //General data variables ***********************************************************************
 
+    //Views
+    RecyclerView classesList;
     Button unShow;
     Button noHomework;
 
@@ -42,36 +52,41 @@ public class StudentClassesActivity extends AddMenuActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_classes);
 
+        //getting general vars *********************************************************************
+        //getting data from SharedPreferences
         UserData = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         org = UserData.getString("org", "not found");
         UserName = UserData.getString("UserName", "not found");
 
+
+        //getting general vars *********************************************************************
+
+        //Find views
         classesList = findViewById(R.id.RVStudentClassesList);
+        unShow = findViewById(R.id.BtnDisturbanceUnShows);
+        noHomework = findViewById(R.id.BtnDisturbanceNoHomeworks);
+
+        //Sets views
+
+        unShow.setOnClickListener(disturbanceOnClick);
+        noHomework.setOnClickListener(disturbanceOnClick);
 
         db.collection("organizations").document(org).collection("Student")
-                        .document(UserName).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                .document(UserName).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            ArrayList<String> dbClassesList = (ArrayList<String>) documentSnapshot.get("Classes");
-                            if (dbClassesList == null) dbClassesList = new ArrayList<>();
-                            classes = dbClassesList;
-                            updateClassesList();
+                        ArrayList<String> dbClassesList = (ArrayList<String>) documentSnapshot.get("Classes");
+                        if (dbClassesList == null) dbClassesList = new ArrayList<>();
+                        classes = dbClassesList;
+                        updateClassesList();
                     }
                 });
-
-        unShow = findViewById(R.id.BtnDisturbanceUnShows);
-        unShow.setOnClickListener(disturbanceOnClick);
-        noHomework = findViewById(R.id.BtnDisturbanceNoHomeworks);
-        noHomework.setOnClickListener(disturbanceOnClick);
     }
 
     View.OnClickListener disturbanceOnClick = new View.OnClickListener(){
-
         @Override
         public void onClick(View v) {
-            String disturbance;
-            if (v == unShow) disturbance = "unShow";
-            else disturbance = "noHomeWork";
+            String disturbance = v==unShow ? "unShow" : "noHomeWork";
 
             Intent i =new Intent(getApplicationContext(), ShowDisturbanceActivity.class);
             i.putExtra("name", UserName);
