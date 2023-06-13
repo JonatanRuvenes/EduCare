@@ -42,32 +42,43 @@ import java.util.ArrayList;
 
 public class SignInActivity extends AppCompatActivity {
 
-    SharedPreferences savedUserData;
+    //General data variables ***********************************************************************
+    //Firestore variables
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    //Authentication variables
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();;
+
+    //SharedPreferences variables
+    SharedPreferences savedUserData;
     SharedPreferences.Editor UserData;
 
-    FirebaseAuth mAuth;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    //User variables
     String UID;
     String org;
     String tORs;
     String Name;
 
+    //General data variables ***********************************************************************
+
+    //Views
     TextView Email;
     TextView Password;
     Button enter;
     Button signUp;
-
-    String TAG = "check";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
+        //getting general vars *********************************************************************
+        //getting data from SharedPreferences
         savedUserData = getSharedPreferences("UserData", MODE_PRIVATE);
         UserData = savedUserData.edit();
+        //getting general vars *********************************************************************
 
+        //find if the user is already register from this device
         if (
                 savedUserData.getString("org", "nope") != "nope" ||
                 savedUserData.getString("tORs", "nope") != "nope" ||
@@ -77,6 +88,10 @@ public class SignInActivity extends AppCompatActivity {
             tORs =savedUserData.getString("tORs", "nope");
             Name =savedUserData.getString("UserName", "nope");
             if (tORs.equals("Student")) {
+                /* adding listeners for the student classes in RealtimeDatabase the
+                listeners get the teacher location and find the distance between the
+                teacher to the student and return the teacher if it a reasonable
+                distance to be in the lesson */
                 if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                         ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, 111);
@@ -85,6 +100,7 @@ public class SignInActivity extends AppCompatActivity {
                 } else if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 113);
                 }
+
                 if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                         ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     db.collection("organizations").document(org)
@@ -150,13 +166,13 @@ public class SignInActivity extends AppCompatActivity {
             startActivity(i);
         }
 
-        mAuth = FirebaseAuth.getInstance();
-
+        //Find views
         Email = findViewById(R.id.ETSignInEmail);
         Password = findViewById(R.id.ETPassword);
-
         signUp = findViewById(R.id.BTNSignUp);
         enter = findViewById(R.id.BTNEnter);
+
+        //Sets views
 
         signUp.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(),SignUpActivity.class);
