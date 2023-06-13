@@ -46,7 +46,6 @@ public class AddHomeworkFragment extends Fragment {
     int mDate, mMonth, mYear;
     ArrayList<String> Students;
 
-    //User variables
     String org;
     String ClassID;
 
