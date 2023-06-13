@@ -98,6 +98,8 @@ public class AddClassFragment extends Fragment {
                 // Close the keyboard
                 imm.hideSoftInputFromWindow(subject.getWindowToken(), 0);
 
+                //set button enabled
+                addStudents.setEnabled(false);
                 //Open the AddStudentToClassFragment
                 AppCompatActivity activity = (AppCompatActivity) view.getContext();
                 AddStudentToClassFragment fragment = new AddStudentToClassFragment();

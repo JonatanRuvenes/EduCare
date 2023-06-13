@@ -25,13 +25,20 @@ import java.util.ArrayList;
 
 public class AddStudentToClassFragment extends Fragment {
 
-    //TODO: make search for the teacher
-
+    //General data variables ***********************************************************************
+    //Firestore variables
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    String org;
+
+    //Activity variables
     StudentsToClassAdapter studentsToClassAdapter;
-    ArrayList<String> Students = new ArrayList<>();
-    ArrayList<String> StudentsSearch;
+    ArrayList<String> StudentsList = new ArrayList<>();
+
+    //User variables
+    String org;
+
+    //General data variables ***********************************************************************
+
+    //Views
     RecyclerView students;
     Button add;
 
@@ -39,25 +46,20 @@ public class AddStudentToClassFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_student_to_class, container, false);
 
+        //getting general vars *********************************************************************
         org = AddClassFragment.org;
 
+        //getting general vars *********************************************************************
+
+        //Find views
         students = view.findViewById(R.id.FRRVStudentsToClass);
-        db.collection("organizations").document(org).collection("Student").get()
-                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                            @Override
-                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-                                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                                    String documentName = documentSnapshot.getId();
-                                    Students.add(documentName);
-                                }
-                                StudentsSearch = Students;
-                                updateStudentsList();
-                            }
-                        });
-
         add = view.findViewById(R.id.FRBTNEndAddingStudents);
+
+        //Sets views
+        findStudentsInFirestore();
+
         add.setOnClickListener(new View.OnClickListener() {
+            //come back to AddClassFragment
             @Override
             public void onClick(View v) {
                 AppCompatActivity activity = (AppCompatActivity) view.getContext();
@@ -68,9 +70,26 @@ public class AddStudentToClassFragment extends Fragment {
             }
         });
 
+
         return view;
     }
 
+    public void findStudentsInFirestore(){
+        db.collection("organizations").document(org).collection("Student").get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            String documentName = documentSnapshot.getId();
+                            StudentsList.add(documentName);
+                        }
+                        updateStudentsList();
+                    }
+                });
+    }
+
+    //Update the students views in the students RecyclerView
     private void updateStudentsList() {
         RecyclerView.LayoutManager studentsToClassLayout = new LinearLayoutManager(getContext());
         studentsToClassAdapter = new StudentsToClassAdapter();
@@ -89,15 +108,15 @@ public class AddStudentToClassFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull StudentsToClassViewHolder holder, int position) {
-            String currentStudent = StudentsSearch.get(position);
+            String currentStudent = StudentsList.get(position);
 
             holder.name.setText(currentStudent);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     AddClassFragment.AddStudent(currentStudent);
-                    StudentsSearch.remove(currentStudent);
-                    Students.remove(currentStudent);
+                    StudentsList.remove(currentStudent);
+                    StudentsList.remove(currentStudent);
                     studentsToClassAdapter.notifyDataSetChanged();
                 }
             });
@@ -105,7 +124,7 @@ public class AddStudentToClassFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return StudentsSearch.size();
+            return StudentsList.size();
         }
 
 
