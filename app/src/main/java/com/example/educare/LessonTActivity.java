@@ -198,6 +198,7 @@ public class LessonTActivity extends AddMenuActivity {
                         });
                     }
                 }
+                finish();
             }
         });
 
@@ -217,8 +218,9 @@ public class LessonTActivity extends AddMenuActivity {
     that the user find the distance between him and the teacher and returns if the
     student is in reasonable distance from the teacher and if it is the teacher set
     the student as Attendance in lesson */
+    FusedLocationProviderClient fusedLocationClient;
     public void getLocation() {
-        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 111);
@@ -361,16 +363,8 @@ public class LessonTActivity extends AddMenuActivity {
             DocumentReference docRef = db.collection("organizations")
                     .document(org).collection("Student")
                     .document(currentStudent.getName());
-            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    if (documentSnapshot.exists()) {
-                        //Taking data from firestore
-                        holder.Name.setText(documentSnapshot.getString("Name"));
-                        ;
-                    }
-                }
-            });
+
+            holder.Name.setText(currentStudent.getName());
 
             holder.Attendance.setOnClickListener(new View.OnClickListener() {
                 @Override
