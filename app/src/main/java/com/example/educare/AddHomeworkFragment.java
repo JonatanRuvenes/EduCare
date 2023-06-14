@@ -45,6 +45,7 @@ public class AddHomeworkFragment extends Fragment {
     //User variables
     String org;
     String ClassID;
+    String subject;
 
     //General data variables ***********************************************************************
 
@@ -63,7 +64,7 @@ public class AddHomeworkFragment extends Fragment {
         //getting data from bundle
         Bundle args = getArguments();
         if (args != null) {
-            Subject.setText(args.getString("Subject"));
+            subject = args.getString("Subject");
             ClassID = args.getString("ClassID");
             org = args.getString("org");
         }
@@ -79,6 +80,8 @@ public class AddHomeworkFragment extends Fragment {
         Add = view.findViewById(R.id.FRBTNAddHomework);
 
         //Sets views
+
+        Subject.setText(subject);
         Cal.setOnClickListener(new View.OnClickListener() {
             //change the date
             @Override
