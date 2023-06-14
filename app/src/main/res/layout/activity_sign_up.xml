@@ -45,14 +45,6 @@
             android:inputType="textPassword" />
 
         <EditText
-            android:id="@+id/ETID"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="ID"
-            android:inputType="number" />
-
-        <EditText
             android:id="@+id/ETEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

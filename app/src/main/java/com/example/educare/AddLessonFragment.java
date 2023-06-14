@@ -88,10 +88,16 @@ public class AddLessonFragment extends Fragment {
                     hour = selectedHour;
                     minute = selectedMinute;
                     Time time = new Time(selectedHour,selectedMinute);
-                    if (view == Start)
+                    if (view == Start){
+                        startHour = hour;
+                        startMinute = minute;
                         Start.setText("Start:  "+time.toString());
-                    if (view == End)
+                    }
+                    if (view == End){
+                        endHour = hour;
+                        endMinute = minute;
                         End.setText("End:    "+time.toString());
+                    }
                 }
             };
 

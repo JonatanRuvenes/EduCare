@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -132,8 +133,7 @@ public class ClassesTActivity extends AddMenuActivity {
                     .document(currentClass).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            subject[0] = (String) documentSnapshot.get("Subject");
-                            holder.Subject.setText(subject[0]);
+                            holder.Subject.setText((String)documentSnapshot.get("Subject"));
                         }
                     });
 
@@ -144,19 +144,24 @@ public class ClassesTActivity extends AddMenuActivity {
                             .document(currentClass).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                 @Override
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                    //passing data to fragment
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString("Subject", subject[0]);
-                                    bundle.putString("ClassID", currentClass);
-                                    bundle.putString("org", org);
+                                    db.collection("organizations").document(org).collection("Classes")
+                                            .document(currentClass).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                    Bundle bundle = new Bundle();
+                                                    bundle.putString("Subject", (String)documentSnapshot.get("Subject"));
+                                                    Toast.makeText(ClassesTActivity.this, (String)documentSnapshot.get("Subject") + "hi", Toast.LENGTH_SHORT).show();
+                                                    bundle.putString("ClassID", currentClass);
+                                                    bundle.putString("org", org);
 
-                                    AppCompatActivity activity = (AppCompatActivity) view.getContext();
-                                    AddHomeworkFragment fragment = new AddHomeworkFragment();
-                                    fragment.setArguments(bundle);
-
-                                    activity.getSupportFragmentManager().beginTransaction()
-                                            .replace(R.id.FContainerClassesT,fragment)
-                                            .addToBackStack(null).commit();
+//                                                    AppCompatActivity activity = (AppCompatActivity) view.getContext();
+//                                                    AddHomeworkFragment fragment = new AddHomeworkFragment();
+//                                                    fragment.setArguments(bundle);
+//                                                    activity.getSupportFragmentManager().beginTransaction()
+//                                                            .replace(R.id.FContainerClassesT,fragment)
+//                                                            .addToBackStack(null).commit();
+                                                }
+                                            });
                                 }
                             });
                 }

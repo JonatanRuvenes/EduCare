@@ -52,7 +52,7 @@ public class AddClassFragment extends Fragment {
     //Views
     EditText subject;
     Button add;
-    Button addStudents;
+    static Button addStudents;
     Button addLesson;
 
     @Override
@@ -73,6 +73,7 @@ public class AddClassFragment extends Fragment {
             lessons = new ArrayList<>();
             Students = new ArrayList<>();
             subjectText = null;
+            addStudents = null;
         }
 
         progressDialog = new ProgressDialog(this.getContext());
@@ -108,6 +109,7 @@ public class AddClassFragment extends Fragment {
 
                 //set button enabled
                 addStudents.setEnabled(false);
+
                 //Open the AddStudentToClassFragment
                 AppCompatActivity activity = (AppCompatActivity) view.getContext();
                 AddStudentToClassFragment fragment = new AddStudentToClassFragment();
@@ -211,7 +213,7 @@ public class AddClassFragment extends Fragment {
                         }
 
                         //add lesson to firebase
-                        /*need to use thread to frevent from casse when the fragment is closed before all data has been uploaded*/
+                        /*need to use thread to prevent from case when the fragment is closed before all data has been uploaded*/
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
@@ -229,10 +231,10 @@ public class AddClassFragment extends Fragment {
                                     while (j[0]) ;
                                     j[0] = true;
                                     Map<String, Object> lessonData = new HashMap<>();
-                                    lessonData.put("endHour", lessons.get(i).end.Hour);
-                                    lessonData.put("endMinute", lessons.get(i).end.Minutes);
-                                    lessonData.put("startHour", lessons.get(i).start.Hour);
-                                    lessonData.put("startMinute", lessons.get(i).start.Minutes);
+                                    lessonData.put("endHour", lessons.get(i).end.getHour());
+                                    lessonData.put("endMinute", lessons.get(i).end.getMinutes());
+                                    lessonData.put("startHour", lessons.get(i).start.getHour());
+                                    lessonData.put("startMinute", lessons.get(i).start.getMinutes());
 
                                     int finalI = i;
                                     db.collection("organizations").document(org).collection("Lessons")
@@ -288,6 +290,7 @@ public class AddClassFragment extends Fragment {
         subjectText = null;
         userName = null;
         org = null;
+        addStudents = null;
 
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
         fragmentManager.beginTransaction().remove(AddClassFragment.this).commit();
