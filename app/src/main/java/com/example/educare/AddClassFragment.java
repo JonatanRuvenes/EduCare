@@ -1,5 +1,6 @@
 package com.example.educare;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,6 +37,8 @@ public class AddClassFragment extends Fragment {
 
     //keyboard
     InputMethodManager imm;
+    //ProgressDialog variables
+    ProgressDialog progressDialog;
 
     //User variables
     static String org;
@@ -71,6 +74,11 @@ public class AddClassFragment extends Fragment {
             Students = new ArrayList<>();
             subjectText = null;
         }
+
+        progressDialog = new ProgressDialog(this.getContext());
+        progressDialog.setTitle("Loading");
+        progressDialog.setMessage("adding the class");
+        progressDialog.setCancelable(false);
         //getting general vars *********************************************************************
 
         //Find views
@@ -150,6 +158,8 @@ public class AddClassFragment extends Fragment {
 
     //Adding all the needed data to firestore
     public void addDataToFirestore(){
+        progressDialog.show();
+
         Map<String, Object> classData = new HashMap<>();
         classData.put("teacher", userName);
         classData.put("Students", Students);
@@ -269,6 +279,8 @@ public class AddClassFragment extends Fragment {
         for (int i = 0; i < firestoreActions.length; i++) {
             if (!firestoreActions[i]) return;
         }
+
+        progressDialog.dismiss();
 
         days = new ArrayList<>(Collections.nCopies(7, false));
         lessons = new ArrayList<>();
