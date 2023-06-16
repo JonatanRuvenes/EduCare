@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,7 @@ public class HomePageActivity extends AddMenuActivity {
     int day;
     Calendar calendar = Calendar.getInstance();
     ArrayList<String> Classes = new ArrayList<>();
+    public static ArrayList<Lesson> lessons;
 
     //User variables
     String org;
@@ -75,125 +77,24 @@ public class HomePageActivity extends AddMenuActivity {
         Name = findViewById(R.id.TVName);
         timetable = findViewById(R.id.RVTimetable);
 
-
         //Sets views
-
-        // General vars
 
         Name.setText(UserName);
 
-        // Building lessons from Firestore
-        db.collection("organizations").document(org).collection(tORs).document(UserName)
-                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.exists()) {
-                    Classes = (ArrayList<String>) documentSnapshot.get("Classes");
-                    updateTimeTable();
-                }
-            }
-        });
+        updateTimeTable();
+
     }
 
     public void updateTimeTable() {
-        if(Classes == null) {return;}
-        ArrayList<Lesson> lessons = new ArrayList<>();
-        CollectionReference colRef = db.collection("organizations")
-                .document(org).collection("Classes");
-
-        progressDialog.show();
-        for (int i = 0; i <= Classes.size(); i++) {
-            if (i < Classes.size()) {
-                DocumentReference docRef = colRef.document(Classes.get(i));
-                int finalI = i;
-                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshotOrig) {
-                        ArrayList<Boolean> lessonDays = (ArrayList<Boolean>) documentSnapshotOrig.get("Days");
-                        if (lessonDays == null)return;
-                        if (lessonDays.get(day-1)) {
-                            docRef.collection("Lessons").document(day + "")
-                                    .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                            ArrayList<String> lessonsID = (ArrayList<String>) documentSnapshot.get("lessonsID");
-                                            if (lessonsID == null) return;
-                                            for (int j = 0; j < lessonsID.size(); j++) {
-                                                db.collection("organizations").document(org)
-                                                        .collection("Lessons").document(lessonsID.get(j))
-                                                        .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                                            @Override
-                                                            public void onSuccess(DocumentSnapshot doc) {
-                                                                Integer startHour = doc.getLong("startHour").intValue();
-                                                                Integer startMinute = doc.getLong("startMinute").intValue();
-                                                                Integer endHour = doc.getLong("endHour").intValue();
-                                                                Integer endMinute = doc.getLong("endMinute").intValue();
-                                                                String subject = documentSnapshotOrig.getString("Subject");
-                                                                lessons.add(new Lesson(subject, new Time(startHour, startMinute), new Time(endHour, endMinute),Classes.get(finalI)));
-
-                                                                RecyclerView.LayoutManager timetableLayout = new LinearLayoutManager(HomePageActivity.this);
-                                                                LessonAdapter timetableAdapter = new LessonAdapter(lessons,tORs,HomePageActivity.this);
-                                                                timetable.setLayoutManager(timetableLayout);
-                                                                timetable.setAdapter(timetableAdapter);
-                                                                progressDialog.dismiss();
-                                                            }
-                                                        });
-                                            }
-                                        }
-                                    });
-                        }
-                    }
-                });
-            }
-        }
-
+        if (lessons == null) return;
+        Log.d("update", "updateTimeTable: ");
+        RecyclerView.LayoutManager timetableLayout = new LinearLayoutManager(HomePageActivity.this);
+        LessonAdapter timetableAdapter = new LessonAdapter(lessons,tORs,HomePageActivity.this);
+        timetable.setLayoutManager(timetableLayout);
+        timetable.setAdapter(timetableAdapter);
+        progressDialog.dismiss();
     }
 
-    private class Lesson {
-        String subject;
-        Time Start;
-        Time End;
-        String ClassroomID;
-
-        public Lesson(String className, Time start, Time end, String classroomID) {
-            this.subject = className;
-            Start = start;
-            End = end;
-            ClassroomID = classroomID;
-        }
-
-        public String getClassroomID() {
-            return ClassroomID;
-        }
-
-        public void setClassroomID(String classroomID) {
-            ClassroomID = classroomID;
-        }
-
-        public String getSubject() {
-            return subject;
-        }
-
-        public void setSubject(String subject) {
-            this.subject = subject;
-        }
-
-        public Time getStart() {
-            return Start;
-        }
-
-        public void setStart(Time start) {
-            Start = start;
-        }
-
-        public Time getEnd() {
-            return End;
-        }
-
-        public void setEnd(Time end) {
-            End = end;
-        }
-    }
     public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.LessonViewHolder>{
         ArrayList<Lesson> lessons;
         String tORs;
