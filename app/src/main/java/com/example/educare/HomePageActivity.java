@@ -2,6 +2,7 @@ package com.example.educare;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -120,42 +121,28 @@ public class HomePageActivity extends AddMenuActivity {
     }
 
     private void setAlarm() {
-        //TODO: change this to the needded time
+        for (Lesson lesson : lessons){
+            Calendar calendar = lesson.getStart().subtractMinutes(5);
 
-        Toast.makeText(this, "hi", Toast.LENGTH_SHORT).show();
-        // Get the current time
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
+            long alarmTimeInMillis = calendar.getTimeInMillis();
+            int notificationId = (int) System.currentTimeMillis();
 
-        // Set the alarm time to 10 seconds from the current time
-        calendar.add(Calendar.SECOND, 40);
+            AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(HomePageActivity.this, NotificationReceiver.class);
+            intent.putExtra("title", "Title");
+            intent.putExtra("notes", "Notes");
+            intent.putExtra("id", notificationId); // Use notificationId as the ID
 
-        // Create an intent to launch the notification
-        Intent notificationIntent = new Intent(this, NotificationReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                this,
-                0,
-                notificationIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-        );
-
-        // Check if the app has the SET_ALARM permission
-        String permission = Manifest.permission.SET_ALARM;
-        int granted = PackageManager.PERMISSION_GRANTED;
-        if (checkSelfPermission(permission) == granted) {
-            // Set the alarm using AlarmManager
-            try {
-                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            } catch (SecurityException e) {
-                // Handle SecurityException if thrown
-                e.printStackTrace();
-            }
-        } else {
-            // Handle case when permission is not granted
-            // Request the permission from the user or take appropriate action
-            Toast.makeText(this, "SET_ALARM permission not granted", Toast.LENGTH_SHORT).show();
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                    HomePageActivity.this,
+                    notificationId,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT // Use FLAG_UPDATE_CURRENT instead of FLAG_IMMUTABLE
+            );
+            alarmMgr.set(AlarmManager.RTC_WAKEUP, alarmTimeInMillis, pendingIntent);
         }
     }
+
 
     public void updateTimeTable() {
         if(Classes == null) {return;}

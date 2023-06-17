@@ -1,5 +1,7 @@
 package com.example.educare;
 
+import java.util.Calendar;
+
 public class Time {
     int Hour;
     int Minutes;
@@ -34,6 +36,14 @@ public class Time {
 
     public void setMinutes(int minutes) {
         Minutes = minutes;
+    }
+
+    public Calendar subtractMinutes(int minutes) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, this.Hour);
+        calendar.set(Calendar.MINUTE, this.Minutes);
+        calendar.add(Calendar.MINUTE, -minutes);
+        return calendar;
     }
 
     @Override

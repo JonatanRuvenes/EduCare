@@ -5,40 +5,43 @@ import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
+import android.util.Log;
 
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 public class NotificationReceiver extends BroadcastReceiver {
 
-    private static final String CHANNEL_ID = "alarm_channel";
-    private static final int NOTIFICATION_ID = 1;
+    private static final String CHANNEL_ID = "my_channel";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        createNotificationChannel(context);
+        String title = intent.getStringExtra("title");
+        String notes = intent.getStringExtra("notes");
+        int id = intent.getIntExtra("id", 0);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setContentTitle("Alarm")
-                .setContentText("Alarm is triggered!")
+                .setSmallIcon(R.drawable.calender_iv)
+                .setContentTitle(title)
+                .setContentText(notes)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(NOTIFICATION_ID, builder.build());
-    }
 
-    private void createNotificationChannel(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Alarm Channel";
-            String description = "Channel for alarm notifications";
+            CharSequence name = "My Channel";
+            String description = "My Channel Description";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
-
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
-
-            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
+
+        notificationManager.notify(id, builder.build());
     }
+
+
 }
