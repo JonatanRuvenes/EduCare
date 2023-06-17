@@ -48,8 +48,6 @@ public class HomePageActivity extends AddMenuActivity {
     //SharedPreferences variables
     SharedPreferences UserData;
 
-    //ProgressDialog variables
-    ProgressDialog progressDialog;
 
     //Activity variables
     int day;
@@ -83,11 +81,6 @@ public class HomePageActivity extends AddMenuActivity {
         tORs = UserData.getString("tORs", "not found");
         UserName = UserData.getString("UserName", "not found");
         day = calendar.get(Calendar.DAY_OF_WEEK);
-
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Loading");
-        progressDialog.setMessage("Loading today classes");
-        progressDialog.setCancelable(true);
 
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         //getting general vars *********************************************************************
@@ -150,7 +143,6 @@ public class HomePageActivity extends AddMenuActivity {
         CollectionReference colRef = db.collection("organizations")
                 .document(org).collection("Classes");
 
-        progressDialog.show();
         for (int i = 0; i <= Classes.size(); i++) {
             if (i < Classes.size()) {
                 DocumentReference docRef = colRef.document(Classes.get(i));
@@ -184,7 +176,6 @@ public class HomePageActivity extends AddMenuActivity {
                                                                 LessonAdapter timetableAdapter = new LessonAdapter(lessons,tORs,HomePageActivity.this);
                                                                 timetable.setLayoutManager(timetableLayout);
                                                                 timetable.setAdapter(timetableAdapter);
-                                                                progressDialog.dismiss();
                                                             }
                                                         });
                                             }
