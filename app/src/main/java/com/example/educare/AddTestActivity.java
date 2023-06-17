@@ -55,6 +55,13 @@ public class AddTestActivity extends AddMenuActivity {
     EditText testName;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        finish();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_test);

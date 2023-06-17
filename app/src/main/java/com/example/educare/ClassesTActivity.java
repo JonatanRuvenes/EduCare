@@ -45,6 +45,12 @@ public class ClassesTActivity extends AddMenuActivity {
     Button addClass;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        updateClassesList();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_classes_tactivity);

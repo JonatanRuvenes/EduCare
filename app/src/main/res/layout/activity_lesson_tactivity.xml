@@ -48,7 +48,7 @@
         android:id="@+id/BTNFindData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Find Data"
+        android:text="Find Students"
         android:layout_marginRight="5dp"
         android:textAllCaps="false"
         app:layout_constraintBottom_toTopOf="@+id/scrollView2"

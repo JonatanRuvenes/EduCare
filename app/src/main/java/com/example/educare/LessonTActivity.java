@@ -74,6 +74,12 @@ public class LessonTActivity extends AddMenuActivity {
     Button findStudents;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        finish();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lesson_tactivity);

@@ -72,6 +72,12 @@ public class HomePageActivity extends AddMenuActivity {
     Button SetNotification;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        updateTimeTable();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);

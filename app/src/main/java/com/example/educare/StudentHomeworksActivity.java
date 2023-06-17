@@ -42,6 +42,12 @@ public class StudentHomeworksActivity extends AddMenuActivity {
     RecyclerView homeworksList;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        finish();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_homeworks);

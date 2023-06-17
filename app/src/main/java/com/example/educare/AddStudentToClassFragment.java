@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,6 +40,13 @@ public class AddStudentToClassFragment extends Fragment {
     //Views
     RecyclerView students;
     Button add;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        fragmentManager.beginTransaction().remove(AddStudentToClassFragment.this).commit();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
