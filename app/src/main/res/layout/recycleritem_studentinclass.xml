@@ -29,7 +29,6 @@
         android:layout_height="wrap_content"
         android:text="name"
         android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -48,6 +47,7 @@
         android:layout_height="wrap_content"
         android:text="Tests"
         android:textAllCaps="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/RIBTNUnShow" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/RITVStudentInClassName" />
 </androidx.constraintlayout.widget.ConstraintLayout>
