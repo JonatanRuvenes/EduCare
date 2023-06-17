@@ -129,8 +129,8 @@ public class HomePageActivity extends AddMenuActivity {
 
             AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             Intent intent = new Intent(HomePageActivity.this, NotificationReceiver.class);
-            intent.putExtra("title", "Title");
-            intent.putExtra("notes", "Notes");
+            intent.putExtra("title", lesson.subject);
+            intent.putExtra("notes", "you have a lesson in 5 minutes");
             intent.putExtra("id", notificationId); // Use notificationId as the ID
 
             PendingIntent pendingIntent = PendingIntent.getBroadcast(
