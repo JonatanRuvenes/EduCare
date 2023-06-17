@@ -42,13 +42,6 @@ public class AddStudentToClassFragment extends Fragment {
     Button add;
 
     @Override
-    public void onResume() {
-        super.onResume();
-        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-        fragmentManager.beginTransaction().remove(AddStudentToClassFragment.this).commit();
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_student_to_class, container, false);
 

@@ -56,14 +56,6 @@ public class AddClassFragment extends Fragment {
     Button addLesson;
 
     @Override
-    public void onResume() {
-        super.onResume();
-        closeFragment(0);
-        closeFragment(1);
-        closeFragment(2);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_class, container, false);
 

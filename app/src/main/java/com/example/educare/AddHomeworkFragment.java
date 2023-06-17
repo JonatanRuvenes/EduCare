@@ -56,12 +56,7 @@ public class AddHomeworkFragment extends Fragment {
     EditText description;
     Button Add;
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-        fragmentManager.beginTransaction().remove(AddHomeworkFragment.this).commit();
-    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

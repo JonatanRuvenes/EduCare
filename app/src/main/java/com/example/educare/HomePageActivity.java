@@ -71,11 +71,6 @@ public class HomePageActivity extends AddMenuActivity {
     RecyclerView timetable;
     Button SetNotification;
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        updateTimeTable();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

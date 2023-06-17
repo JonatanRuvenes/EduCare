@@ -44,11 +44,6 @@ public class ClassesTActivity extends AddMenuActivity {
     RecyclerView classesList;
     Button addClass;
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        updateClassesList();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +129,6 @@ public class ClassesTActivity extends AddMenuActivity {
             String currentClass = classes.get(position);
 
             //General views
-            final String[] subject = {""};
             db.collection("organizations").document(org).collection("Classes")
                     .document(currentClass).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override

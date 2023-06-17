@@ -39,13 +39,6 @@ public class LessonSFragment extends Fragment {
     Button Homeworks;
 
     @Override
-    public void onResume() {
-        super.onResume();
-        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-        fragmentManager.beginTransaction().remove(LessonSFragment.this).commit();
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_lesson_s, container, false);
 

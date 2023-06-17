@@ -73,11 +73,6 @@ public class LessonTActivity extends AddMenuActivity {
     Button update;
     Button findStudents;
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        finish();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
