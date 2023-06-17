@@ -192,6 +192,16 @@ public class ClassDetailsActivity extends AddMenuActivity {
                     startActivity(i);
                 }
             });
+
+            holder.Tests.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i =new Intent(ClassDetailsActivity.this , StudentTestsActivity.class);
+                    i.putExtra("ClassId", classID);
+                    i.putExtra("UserName", currentStudent);
+                    startActivity(i);
+                }
+            });
         }
 
         @Override
@@ -203,6 +213,7 @@ public class ClassDetailsActivity extends AddMenuActivity {
             TextView name;
             Button unShow;
             Button noHomework;
+            Button Tests;
 
             public StudentsListInClassViewHolder(@NonNull View itemView) {
                 super(itemView);
@@ -210,6 +221,7 @@ public class ClassDetailsActivity extends AddMenuActivity {
                 name = itemView.findViewById(R.id.RITVStudentInClassName);
                 unShow = itemView.findViewById(R.id.RIBTNUnShow);
                 noHomework = itemView.findViewById(R.id.RIBTNNoHomework);
+                Tests = itemView.findViewById(R.id.RIBTNTests);
             }
         }
     }

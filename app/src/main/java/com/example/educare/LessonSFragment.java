@@ -71,6 +71,7 @@ public class LessonSFragment extends Fragment {
             public void onClick(View view) {
                 Intent i =new Intent(getActivity().getApplicationContext(), StudentTestsActivity.class);
                 i.putExtra("ClassId",ClassID);
+                i.putExtra("UserName", UserData.getString("UserName", "not found"));
                 startActivity(i);
             }
         });

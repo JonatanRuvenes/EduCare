@@ -51,10 +51,10 @@ public class StudentTestsActivity extends AddMenuActivity {
         //getting data from SharedPreferences
         UserData = getSharedPreferences("UserData", MODE_PRIVATE);
         org = UserData.getString("org", "not found");
-        UserName = UserData.getString("UserName", "not found");
 
         //getting data from Intent
         Intent intent = getIntent();
+        UserName = intent.getStringExtra("UserName");
         ClassID = intent.getStringExtra("ClassId");
         //getting general vars *********************************************************************
 
